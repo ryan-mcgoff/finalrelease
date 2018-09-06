@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#F44336</color>
+    <color name = "colorSettings">#BBDEFB</color>
+    <color name = "toolBarColor">#FFFFFF</color>
+
+    <color name="greenPriority">#4caf50</color>
+    <color name="yellowPriority">#ffeb3b</color>
+    <color name="redPriority">#D32F2F</color>
+
+    <color name="whiteC">#FFFFFF</color>
+
+    <color name="lowPriorityT">#BA00FF</color>
+    <color name="medPriorityT">#FF00C7</color>
+    <color name="highPriorityT">#FF004A</color>
+    <color name="colorPrimaryT">#5BDEB5</color>
+    <color name="colorAccentT">#FFC107</color>
+
+    <color name="lowPriorityP">#A07171</color>
+    <color name="medPriorityP">#D9C1C1</color>
+    <color name="highPriorityP">#4E4343</color>
+    <color name="colorPrimaryP">#9F82C3</color>
+    <color name="colorAccentP">#E4F05E</color>
+
+    <color name="lowPriorityD">#00FF67</color>
+    <color name="medPriorityD">#cb2270</color>
+    <color name="highPriorityD">#e4e613</color>
+    <color name="colorPrimaryD">#0093FF</color>
+    <color name="colorAccentD">#524d4d</color>
+</resources>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:id="@+id/buttonScrollView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:orientation="horizontal">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:scrollbars="none"
+    android:id="@+id/scrollView1"
+        android:layout_marginBottom="8dp"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <HorizontalScrollView
+        android:scrollbars="none"
+        android:layout_marginBottom="8dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_marginTop="8dp"
+
+
+            android:layout_marginLeft="8dp"
+            android:layout_width="fill_parent"
+            android:id="@+id/linearLayout1"
+            android:orientation="horizontal"
+            android:layout_height="fill_parent">
+
+            <RadioGroup
+                android:id="@+id/btnTimeGroup"
+                android:layout_width="match_parent"
+                android:contentDescription="Time Filters"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content" >
+            <RadioButton
+
+                android:id="@+id/btnAnyTime"
+                android:layout_height="40dp"
+                android:layout_width="110dp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="Anytime"
+                android:text="Anytime"
+                android:background="@drawable/oval_shape"
+                 />
+            <RadioButton
+                android:id="@+id/btnLastDay"
+                android:layout_height="40dp"
+                android:layout_width="110dp"
+                android:textAlignment="center"
+                android:contentDescription="Today"
+                android:button="@null"
+                android:text="Today"
+                android:background="@drawable/oval_shape"
+
+                 />
+            <RadioButton
+                android:id="@+id/btnLastWeek"
+                android:layout_height="40dp"
+                android:layout_width="110dp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:contentDescription="Past Week"
+                android:text="Past Week"
+                android:background="@drawable/oval_shape"
+
+               />
+            <RadioButton
+                android:id="@+id/btnLastMonth"
+                android:layout_height="40dp"
+                android:layout_width="110dp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:text="Past Month"
+                android:contentDescription="Past Month"
+                android:background="@drawable/oval_shape"
+
+
+                />
+            <RadioButton
+                android:id="@+id/btnLastYear"
+                android:text="Past Year"
+                android:contentDescription="Past Year"
+                android:layout_height="40dp"
+                android:layout_width="110dp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:background="@drawable/oval_shape"
+                />
+
+
+            </RadioGroup>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+</ScrollView>
+
+</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonScrollView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal">
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:scrollbars="none"
+            android:layout_width="fill_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_height="fill_parent">
+            <HorizontalScrollView
+                android:scrollbars="none"
+                android:layout_marginBottom="8dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_width="fill_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="fill_parent">
+
+                    <RadioGroup
+                        android:id="@+id/btnTaskGroup"
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:contentDescription="Task Type Buttons"
+                        android:layout_height="wrap_content" >
+
+                    <RadioButton
+                        android:layout_marginBottom="2dp"
+                        android:id="@+id/btnAllTasks"
+                        android:layout_height="40dp"
+                        android:layout_width="110dp"
+                        android:textAlignment="center"
+                        android:button="@null"
+                        android:background="@drawable/oval_shape"
+                        android:contentDescription="All tasks"
+                        android:text="All Tasks"
+
+                        />
+                    <RadioButton
+                        android:id="@+id/btnFixedTasks"
+                        android:layout_height="40dp"
+                        android:layout_width="110dp"
+                        android:textAlignment="center"
+                        android:button="@null"
+                        android:background="@drawable/oval_shape"
+                        android:contentDescription="Fixed Tasks"
+                        android:text="Fixed Tasks"
+
+                        />
+                    <RadioButton
+                        android:id="@+id/btnFlexiTasks"
+                        android:textAlignment="center"
+                        android:button="@null"
+                        android:layout_height="40dp"
+                        android:layout_width="110dp"
+                        android:background="@drawable/oval_shape"
+                        android:contentDescription="FlexiTasks"
+                        android:text="FlexiTasks"
+
+                        />
+                    </RadioGroup>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:paddingLeft="8dp"
+            android:textStyle="bold"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"/>
+        <TextView
+            android:textStyle="bold"
+            android:paddingRight="8dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date Completed"/>
+
+
+    </RelativeLayout>
+
+
+<LinearLayout
+    android:layout_width="wrap_content"
+
+    android:layout_height="wrap_content">
+
+
+    <ListView
+        android:id="@+id/historyListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:choiceMode="singleChoice"
+        android:clipToPadding="false"
+        android:paddingBottom="56dp"
+        android:scrollbarStyle="outsideOverlay" />
+</LinearLayout>
+
+
+</LinearLayout>

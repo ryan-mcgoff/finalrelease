@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="colorEntries">
+        <item> "Original" </item>
+        <item> "Deuteranomaly" </item>
+        <item> "Protanopia" </item>
+        <item> "Tritanopia" </item>
+    </string-array>
+
+    <string-array name="colorValueEntries">
+        <item> "OCOLOUR" </item>
+        <item> "DCOLOUR" </item>
+        <item> "PCOLOUR" </item>
+        <item> "TCOLOUR" </item>
+    </string-array>
+
+</resources>
+

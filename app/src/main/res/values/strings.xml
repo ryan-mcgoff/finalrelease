@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">FlexiTask</string>
+
+    <string-array name="recurring_options_array">
+        <item>Never</item>
+        <item>Every Day</item>
+        <item>Every Week</item>
+        <item>Every Fortnight</item>
+        <item>Every Year</item>
+        <item>Custom</item>
+    </string-array>
+
+    <string-array name="recurring_options_array_flexiTask">
+        <item>Every Day</item>
+        <item>Every Week</item>
+        <item>Every Fortnight</item>
+        <item>Every Year</item>
+        <item>Custom</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="fixed_task">Fixed Task</string>
+    <string name="flexi_task">Flexi Task</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="color_preference_key">color_preference_key</string>
+    <string name="color_preference_title">Colour Adjustment</string>
+    <string name="light_mode">Light Mode</string>
+    <string name="Dark_mode">Light Mode</string>
+    
+    <string name="drawer_open">drawer open</string>
+    <string name="drawer_close">drawer close</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="color_default_value">OCOLOUR</string>
+    <string name="color_summary">Change the app\'s colour scheme (REQUIRES APP RESTART)</string>
+</resources>
