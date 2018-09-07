@@ -1,6 +1,7 @@
 package com.example.android.flexitask;
 
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -12,11 +13,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.ActionBarContainer;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +29,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -48,6 +56,10 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
     private static final int TASKLOADER = 0;
     TaskCursorAdaptor mTaskCursorAdaptor;
+
+    private ImageView editButtonToolBar;
+    private ImageView doneButtonToolBar;
+    private ImageView deleteButtonToolBar;
 
 
     //private FloatingActionButton mFabFixedTask;
@@ -83,11 +95,15 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         //inflates the XML layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_flexi_task_timeline, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_flexi_task_timeline, container, false);
 
         // Find the ListView which will be populated with the tasks data
         final ListView timeLineListView = (ListView) rootView.findViewById(R.id.timelineListView);
+
+
 
         //get label filter selected from the navigation bar
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -116,6 +132,9 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         timeLineListView.setAdapter(mTaskCursorAdaptor);
 
         bottomBar = rootView.findViewById(R.id.toolbar);
+        editButtonToolBar = bottomBar.findViewById(R.id.edit);
+        doneButtonToolBar = bottomBar.findViewById(R.id.done);
+        deleteButtonToolBar = bottomBar.findViewById(R.id.delete);
 
 
 
@@ -149,12 +168,34 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                     timeLineListView.setItemChecked(position, true);
 
 
+                    Animation fabDown = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+                    Animation slideUpBar = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                    Animation slideUpDone = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                    Animation slideUpEdit = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                    Animation slideUpDel = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                    slideUpBar.setStartOffset(150);
+                    slideUpDone.setStartOffset(170);
+                    slideUpEdit.setStartOffset(230);
+                    slideUpDel.setStartOffset(280);
+
                     getActivity().setTitle("task selected");
                     toolBarShown = true;
                     mFabFlexi.setVisibility(View.GONE);
 
 
+
+                    Animation bottomUp = AnimationUtils.loadAnimation(getContext(), R.anim.show_from_bottom);
+                    mFabFlexi.startAnimation(fabDown);
                     bottomBar.setVisibility(View.VISIBLE);
+                    doneButtonToolBar.setVisibility(View.VISIBLE);
+                    editButtonToolBar.setVisibility(View.VISIBLE);
+                    deleteButtonToolBar.setVisibility(View.VISIBLE);
+                    bottomBar.startAnimation(slideUpBar);
+                    doneButtonToolBar.startAnimation(slideUpDone);
+                    editButtonToolBar.startAnimation(slideUpEdit);
+                    deleteButtonToolBar.startAnimation(slideUpDel);
+
+
                 } else {
                     lastClickedID = id;
                     lastClickedPostion = position;
@@ -169,6 +210,8 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
                     resetUI();
 
+
+
                 }
 
             }
@@ -181,11 +224,11 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         /**EDITING BUTTON -
          * gets the URI for the selected list item, and sends it to the editor activity for processing.
          */
-        ImageView editButtonToolBar = bottomBar.findViewById(R.id.edit);
         editButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), FlexiTaskEditor.class);
+
 
                 timeLineListView.setItemChecked(lastClickedPostion, false);
                 resetUI();
@@ -199,11 +242,12 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         });
 
 
+
         /** DONE BUTTON -
          * When the done button (tick) on the toolbar has been selected, the app updates
          * the last_completed_date field for that task/listitem to todays date
          */
-        ImageView doneButtonToolBar = bottomBar.findViewById(R.id.done);
+
         doneButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -249,7 +293,6 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
             /* DELETE BUTTON -
              * gets the URI for the selected listitem, and deletes it by calling cthe content resolver
              */
-        ImageView deleteButtonToolBar = bottomBar.findViewById(R.id.delete);
         deleteButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -330,7 +373,32 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         }else{
             getActivity().setTitle(label);
         }
+
+        Animation fabUp = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+        Animation slideDownBar = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+        Animation slideDownDone = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+        Animation slideDownEdit = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+        Animation slideDownDel = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+
+        slideDownEdit.setStartOffset(80);
+        slideDownDel.setStartOffset(160);
+        slideDownBar.setStartOffset(180);
+        fabUp.setStartOffset(210);
+
+        doneButtonToolBar.startAnimation(slideDownDone);
+        editButtonToolBar.startAnimation(slideDownEdit);
+        deleteButtonToolBar.startAnimation(slideDownDel);
+        bottomBar.startAnimation(slideDownBar);
+        mFabFlexi.startAnimation(fabUp);
+
+
+
+
+
         bottomBar.setVisibility(View.GONE);
+        doneButtonToolBar.setVisibility(View.GONE);
+        editButtonToolBar.setVisibility(View.GONE);
+        deleteButtonToolBar.setVisibility(View.GONE);
         mFabFlexi.setVisibility(View.VISIBLE);
         toolBarShown = false;
     }

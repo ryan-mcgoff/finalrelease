@@ -21,6 +21,7 @@ https://github.com/Clans/FloatingActionButton-->
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
             android:clipToPadding="false"
             android:paddingBottom="56dp"
             android:scrollbarStyle="outsideOverlay" />
@@ -93,6 +94,7 @@ https://github.com/Clans/FloatingActionButton-->
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
@@ -106,6 +108,7 @@ https://github.com/Clans/FloatingActionButton-->
             android:layout_height="match_parent">
 
             <ImageView
+                android:animateLayoutChanges="true"
                 android:id="@+id/done"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,6 +118,7 @@ https://github.com/Clans/FloatingActionButton-->
                 android:src="@drawable/ic_done_black_24dp" />
 
             <ImageView
+                android:animateLayoutChanges="true"
                 android:id="@+id/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -124,6 +128,7 @@ https://github.com/Clans/FloatingActionButton-->
                 android:src="@drawable/ic_mode_edit_black_24dp" />
 
             <ImageView
+                android:animateLayoutChanges="true"
                 android:id="@+id/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

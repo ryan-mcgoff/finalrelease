@@ -19,6 +19,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -78,7 +79,10 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,
                 R.string.navigation_drawer_open,R.string.navigation_drawer_close);
 
+        actionBarDrawerToggle.setDrawerSlideAnimationEnabled(false);
+
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
+
 
         setAlarm();
 

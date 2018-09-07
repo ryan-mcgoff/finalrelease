@@ -7,10 +7,6 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar_editor"
-        />
 
 <ScrollView
     android:layout_width="match_parent"
@@ -28,6 +24,17 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="32dp"
                 android:paddingTop="32dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_back_white_24dp"
+                    app:layout_anchor="@id/appbar"
+                    android:id="@+id/backButton"
+                    android:onClick="goBack"
+                    android:padding="8dp"
+
+                    app:layout_anchorGravity="top|left|end"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -270,25 +277,55 @@
 
         </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="Set Reminder"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/reminderImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/ic_access_alarm_black_24dp" />
+
+                <TextView
+                    android:id="@+id/reminderMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/reminderImage"
+                    android:layout_toRightOf="@+id/reminderImage"
+                    android:padding="4dp"
+                    android:text="Set Reminder"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/reminderDisplayLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/reminderMessage"
+                    android:layout_alignStart="@+id/reminderMessage"
+                    android:layout_below="@+id/reminderMessage"
+                    android:padding="4dp"
+                    android:text="reminder message" />
+            </RelativeLayout>
+
         </LinearLayout>
 
-
-
-
     </LinearLayout>
-
-
 
 </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/alarmFab"
+        android:id="@+id/doneFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:onClick="setalarm"
-        android:src="@drawable/ic_access_alarm_black_24dp"
+        android:focusable="true"
+        android:onClick="insertTask"
+        android:src="@drawable/ic_done_black_24dp"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end"/>
 

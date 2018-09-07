@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.text.Editable;
@@ -113,7 +114,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
     private long mDueDate;
 
-    private android.support.v7.widget.Toolbar toolbar;
+    private FloatingActionButton doneButton;
 
     private  AppBarLayout appbar;
 
@@ -179,11 +180,12 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flexitask_editor);
 
-        toolbar = findViewById(R.id.toolbar);
+        //toolbar = findViewById(R.id.toolbar);
         appbar = findViewById(R.id.appbar);
-        colorSwitch();
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        //setSupportActionBar(toolbar);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -196,9 +198,13 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         mRecurringSpinner = (Spinner) findViewById(R.id.recurringSpinner);
         mDescriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
         mCustomRecurring = (EditText) findViewById(R.id.customRecurringText);
+        doneButton = (FloatingActionButton) findViewById(R.id.doneFab);
+
+        colorSwitch();
 
         mtitleEditText.addTextChangedListener(mTextEditorWatcher);
         mCustomRecurring.addTextChangedListener(mCustomDayTextWatcher);
+
 
         //gets uri the intent that was used to launch this activity, if it's null that
         //means there wasn't one passed to it and the user isn't editing an exisiting
@@ -325,7 +331,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
      * This determines whether we are inserting a task or updating an existing one by seeing if the URI is null or not.
      *
      */
-    public void insertTask() {
+    public void insertTask(View view) {
 
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
@@ -381,35 +387,11 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
             getContentResolver().update(uriCurrentTask, values, null, null);
         }
 
+        finish();
+
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_editor.xml file.
-        // This adds menu items to the app bar.
-        getMenuInflater().inflate(R.menu.editor_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to a click on the "Save" menu option
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-            case R.id.action_insert:
-                // Save Task to database
-                insertTask();
-                // Exits the activity
-                finish();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     /*Displays Due date in editor UI*/
     public void displayDueDate() {
@@ -425,26 +407,30 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
         switch (colourSetting) {
             case ("DCOLOUR"):
-                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
+               // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
+               doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccentD));
 
                 break;
 
             case ("PCOLOUR"):
 
-                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
+               // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
+                doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccentP));
 
                 break;
 
             case ("TCOLOUR"):
-                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
+               // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
+                doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccentT));
 
                 break;
             default:
-                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+               // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         }
     }
 
@@ -541,24 +527,14 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
     }
 
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 
-    public String convertTimeToString(int hour, int min) {
-        String timeString = "";
+    public void goBack(View view){
+        finish();
 
-        if (hour < 10) {
-            timeString += "0" + hour + ":";
-        } else {
-            timeString += hour + ":";
-        }
-        if (min < 10) {
-            timeString += "0" + min;
-        } else {
-            timeString += min;
-        }
-        return timeString;
     }
 }

@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)-->
 
+
+
 <android.support.design.widget.CoordinatorLayout
+
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-<include
-android:id="@+id/toolbar"
-layout="@layout/toolbar_editor"
-    />
+
+
+
+
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -29,7 +33,19 @@ layout="@layout/toolbar_editor"
                 android:paddingBottom="32dp"
                 android:paddingTop="32dp">
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_back_white_24dp"
+                    app:layout_anchor="@id/appbar"
+                    android:id="@+id/backButton"
+                    android:onClick="goBack"
+                    android:padding="8dp"
+
+                    app:layout_anchorGravity="top|left|end"/>
+
                 <LinearLayout
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="title and description container"
@@ -94,7 +110,42 @@ layout="@layout/toolbar_editor"
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:contentDescription="Next Due Date"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/dueDateImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_date_range_black_24dp" />
+
+            <TextView
+                android:id="@+id/dueDateTextLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/dueDateImage"
+                android:layout_toRightOf="@+id/dueDateImage"
+                android:padding="4dp"
+                android:text="Next Due"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dueDateDisplayLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/dueDateTextLabel"
+                android:layout_alignStart="@+id/dueDateTextLabel"
+                android:layout_below="@+id/dueDateTextLabel"
+                android:padding="4dp"
+                android:text="date" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:padding="8dp">
 
             <ImageView
@@ -155,44 +206,13 @@ layout="@layout/toolbar_editor"
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="Next Due Date"
-            android:padding="8dp">
 
-            <ImageView
-                android:id="@+id/dueDateImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_date_range_black_24dp" />
-
-            <TextView
-                android:id="@+id/dueDateTextLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/dueDateImage"
-                android:layout_toRightOf="@+id/dueDateImage"
-                android:padding="4dp"
-                android:text="Next Due"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/dueDateDisplayLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/dueDateTextLabel"
-                android:layout_alignStart="@+id/dueDateTextLabel"
-                android:layout_below="@+id/dueDateTextLabel"
-                android:padding="4dp"
-                android:text="date" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:contentDescription="time selector"
             android:padding="8dp">
 
@@ -225,6 +245,40 @@ layout="@layout/toolbar_editor"
             </Spinner>
 
         </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="Set Reminder"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/reminderImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_access_alarm_black_24dp" />
+
+            <TextView
+                android:id="@+id/reminderMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/reminderImage"
+                android:layout_toRightOf="@+id/reminderImage"
+                android:padding="4dp"
+                android:text="Set Reminder"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/reminderDisplayLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/reminderMessage"
+                android:layout_alignStart="@+id/reminderMessage"
+                android:layout_below="@+id/reminderMessage"
+                android:padding="4dp"
+                android:text="reminder message" />
+        </RelativeLayout>
+
 
     </LinearLayout>
 
@@ -233,14 +287,18 @@ layout="@layout/toolbar_editor"
 </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/alarmFab"
+        android:id="@+id/doneFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_access_alarm_black_24dp"
+        android:focusable="true"
+        android:onClick="insertTask"
+        android:src="@drawable/ic_done_black_24dp"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end"/>
 </android.support.design.widget.CoordinatorLayout>
+
+
 
 

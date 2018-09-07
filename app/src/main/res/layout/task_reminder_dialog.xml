@@ -25,6 +25,7 @@
             android:drawablePadding="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:button="@null"
             android:drawableEnd="@drawable/unit_selector"
             android:text="Minutes before" />
@@ -33,6 +34,7 @@
             android:textColor="@drawable/radio_button_text_color_selector"
             android:paddingLeft="8dp"
             android:textSize="18dp"
+            android:textStyle="bold"
             android:drawablePadding="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,6 +45,7 @@
         <RadioButton
             android:textColor="@drawable/radio_button_text_color_selector"
             android:paddingLeft="8dp"
+            android:textStyle="bold"
             android:textSize="18dp"
             android:drawablePadding="32dp"
             android:layout_width="wrap_content"
@@ -55,6 +58,7 @@
             android:textColor="@drawable/radio_button_text_color_selector"
             android:paddingLeft="8dp"
             android:textSize="18dp"
+            android:textStyle="bold"
             android:drawablePadding="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

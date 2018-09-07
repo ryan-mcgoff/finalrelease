@@ -411,7 +411,7 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 projection,
                 WHERE,
                 null,
-                "CAST(" + taskContract.TaskEntry.COLUMN_DATE + " AS DOUBLE)");
+                "CAST(" + taskContract.TaskEntry.COLUMN_DATETIME + " AS DOUBLE)");
     }
 
     /**

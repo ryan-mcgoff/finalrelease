@@ -30,6 +30,7 @@ public class taskDBHelper extends SQLiteOpenHelper {
             + taskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + taskContract.TaskEntry.COLUMN_TASK_TITLE + " TEXT NOT NULL, "
             + taskContract.TaskEntry.COLUMN_DESCRIPTION + " TEXT, "
+            + taskContract.TaskEntry.COLUMN_DATETIME + " INTEGER DEFAULT 0, "
             + taskContract.TaskEntry.COLUMN_LABEL + " TEXT NOT NULL DEFAULT 'No label', "
             + taskContract.TaskEntry.COLUMN_DATE + " INTEGER DEFAULT 0, "
             + taskContract.TaskEntry.COLUMN_LAST_COMPLETED + " INTEGER DEFAULT 0, "

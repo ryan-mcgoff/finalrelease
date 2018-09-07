@@ -57,6 +57,8 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, TaskReminderDialog.TaskReminderDialogListener{
 
+    /**Calander for date-time field*/
+    private Calendar calendar;
     /**
      * EditText field to enter Task's title
      */
@@ -127,7 +129,6 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
     private int currentHour;
     private int currentMin;
 
-    private android.support.v7.widget.Toolbar toolbar;
     private AppBarLayout appbar;
 
 
@@ -169,15 +170,15 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        calendar = Calendar.getInstance();
+
 
         setContentView(R.layout.activity_fixed_task_editor);
 
-        toolbar = findViewById(R.id.toolbar);
+
         appbar = findViewById(R.id.appbar);
         colorSwitch();
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         // Find all relevant views that we will need to read user input from
@@ -272,6 +273,10 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                     //bundle for argument to pass to date picker
                     Bundle args = new Bundle();
                     /**Add date (current date set in OnCreate) to bundle*/
+                    calendar.set(Calendar.YEAR,currentYear);
+                    calendar.set(Calendar.MONTH,currentMonth);
+                    calendar.set(Calendar.DAY_OF_MONTH,currentDay);
+
                     args.putInt("year", currentYear);
                     args.putInt("month", currentMonth);
                     args.putInt("day", currentDay);
@@ -293,12 +298,18 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                     Calendar c = Calendar.getInstance();
                     c.setTimeInMillis(mDate);
 
+
+
                     int year = c.get(Calendar.YEAR);
                     int month = c.get(Calendar.MONTH);
                     int day = c.get(Calendar.DAY_OF_MONTH);
                     args.putInt("year", year);
                     args.putInt("month", month);
                     args.putInt("day", day);
+
+                    calendar.set(Calendar.YEAR,year);
+                    calendar.set(Calendar.MONTH,month);
+                    calendar.set(Calendar.DAY_OF_MONTH,day);
 
                     //create new fragment
                     android.support.v4.app.DialogFragment datePicker = new DatePickerFragment();
@@ -329,6 +340,9 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                     args.putInt("hour", currentHour);
                     args.putInt("min", currentMin);
 
+                    calendar.set(Calendar.MINUTE,currentHour);
+                    calendar.set(Calendar.MINUTE,currentMin);
+
                     //create new fragment
                     android.support.v4.app.DialogFragment timePicker = new TimePickerFragment();
                     //pass it the bundle of arguments
@@ -348,6 +362,9 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                     int min = Integer.valueOf(stringParts[1]);
                     args.putInt("hour", hour);
                     args.putInt("min", min);
+
+                    calendar.set(Calendar.MINUTE,hour);
+                    calendar.set(Calendar.MINUTE,min);
 
                     //create new fragment
                     android.support.v4.app.DialogFragment timePicker = new TimePickerFragment();
@@ -433,7 +450,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
     /**
      * Helper method to insertTask into the database
      */
-    public void insertTask() {
+    public void insertTask(View view) {
 
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
@@ -455,6 +472,8 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
             }
         }
 
+
+
         // ContentValues object with column names on the left and values from the editor on the right,
         ContentValues values = new ContentValues();
         values.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, taskTitle);
@@ -462,6 +481,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         values.put(taskContract.TaskEntry.COLUMN_DESCRIPTION, description);
         values.put(taskContract.TaskEntry.COLUMN_HISTORY, "c");
         values.put(taskContract.TaskEntry.COLUMN_STATUS, 1);
+        values.put(taskContract.TaskEntry.COLUMN_DATETIME,calendar.getTimeInMillis());
         values.put(taskContract.TaskEntry.COLUMN_LABEL,mLabelSpinner.getSelectedItem().toString());
         values.put(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD, mNumberOfRecurringDays);
         values.put(taskContract.TaskEntry.COLUMN_TYPE_TASK, 0);
@@ -485,39 +505,8 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
             getContentResolver().update(uriCurrentTask, values, null, null);
         }
 
-    }
+        finish();
 
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_editor.xml file.
-        // This adds menu items to the app bar.
-        getMenuInflater().inflate(R.menu.editor_menu, menu);
-        return true;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-            case R.id.action_insert:
-                // Insert Task into database
-                insertTask();
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -532,10 +521,14 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
          * selected and calls {@link insertTask()} the new date value is updated.
          */
 
+
+
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        calendar = c;
+
         //Date given in local language, can also format the date here
         String chosenDateAsString = DateFormat.getDateInstance().format(c.getTime());
         mDate = c.getTimeInMillis();
@@ -555,6 +548,9 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
          *  to reflect these changes.Update {@link #mTime} so that when {@link #onOptionsItemSelected(R.id.action_save)} is
          * selected and calls {@link insertTask()} the new time value is updated.
          */
+        calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+        calendar.set(Calendar.MINUTE,minute);
+
         TextView timeLabel = (TextView) findViewById(R.id.timeDisplayLabel);
         mTime = convertTimeToString(hourOfDay, minute);
         timeLabel.setText(mTime);
@@ -568,25 +564,20 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
 
         switch (colourSetting) {
             case ("DCOLOUR"):
-                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
 
                 break;
 
             case ("PCOLOUR"):
-
-                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
 
                 break;
 
             case ("TCOLOUR"):
-                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
 
                 break;
             default:
-                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
     }
@@ -773,8 +764,11 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
     public void applyNotificationReminder(String unitsReminder) {
 
         Log.w("reminder units", unitsReminder);
+    }
 
-
+    /**Takes user back to previous timeline activity**/
+    public void goBack(View view){
+        finish();
     }
 }
 

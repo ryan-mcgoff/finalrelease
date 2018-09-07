@@ -22,6 +22,7 @@ https://github.com/Clans/FloatingActionButton-->
             android:layout_height="match_parent"
             android:choiceMode="singleChoice"
             android:clipToPadding="false"
+            android:divider="@android:color/transparent"
             android:paddingBottom="56dp"
             android:scrollbarStyle="outsideOverlay" />
 

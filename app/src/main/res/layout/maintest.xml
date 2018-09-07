@@ -33,6 +33,8 @@
 
   </LinearLayout>
 
+
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
@@ -40,7 +42,9 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:itemIconTint="@color/colorAccent"
+        app:headerLayout="@layout/navigation_view_header"
         app:menu="@menu/drawer_view" >
+
 
 
     </android.support.design.widget.NavigationView>

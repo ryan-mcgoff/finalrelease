@@ -87,6 +87,8 @@ public final class taskContract {
          */
         public final static String COLUMN_DATE = "date";
 
+        public final static String COLUMN_DATETIME = "datetime";
+
         /**
          * Time for the task (for Fixed tasks).
          *
