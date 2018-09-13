@@ -33,6 +33,24 @@ public class taskDBHelper extends SQLiteOpenHelper {
             + taskContract.TaskEntry.COLUMN_DATETIME + " INTEGER DEFAULT 0, "
             + taskContract.TaskEntry.COLUMN_LABEL + " TEXT NOT NULL DEFAULT 'No label', "
             + taskContract.TaskEntry.COLUMN_DATE + " INTEGER DEFAULT 0, "
+            + taskContract.TaskEntry.COLUMN_REMINDER_UNIT + " TEXT DEFAULT '', "
+            + taskContract.TaskEntry.COLUMN_REMINDER_UNIT_BEFORE + " TEXT DEFAULT '', "
+            + taskContract.TaskEntry.COLUMN_LAST_COMPLETED + " INTEGER DEFAULT 0, "
+            + taskContract.TaskEntry.COLUMN_TIME + " TEXT NOT NULL DEFAULT 0, "
+            + taskContract.TaskEntry.COLUMN_RECCURING_PERIOD + " INTEGER NOT NULL DEFAULT 0, "
+            + taskContract.TaskEntry.COLUMN_HISTORY + " TEXT, "
+            + taskContract.TaskEntry.COLUMN_TYPE_TASK + " INTEGER NOT NULL, "
+            + taskContract.TaskEntry.COLUMN_STATUS + " INTEGER NOT NULL)";
+
+    public static final String SQL_CREATE_HISTORY_DATABASE = "CREATE TABLE " + taskContract.TaskEntry.History_TABLE_NAME + " ("
+            + taskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + taskContract.TaskEntry.COLUMN_TASK_TITLE + " TEXT NOT NULL, "
+            + taskContract.TaskEntry.COLUMN_DESCRIPTION + " TEXT, "
+            + taskContract.TaskEntry.COLUMN_DATETIME + " INTEGER DEFAULT 0, "
+            + taskContract.TaskEntry.COLUMN_LABEL + " TEXT NOT NULL DEFAULT 'No label', "
+            + taskContract.TaskEntry.COLUMN_DATE + " INTEGER DEFAULT 0, "
+            + taskContract.TaskEntry.COLUMN_REMINDER_UNIT + " TEXT DEFAULT '', "
+            + taskContract.TaskEntry.COLUMN_REMINDER_UNIT_BEFORE + " TEXT DEFAULT '', "
             + taskContract.TaskEntry.COLUMN_LAST_COMPLETED + " INTEGER DEFAULT 0, "
             + taskContract.TaskEntry.COLUMN_TIME + " TEXT NOT NULL DEFAULT 0, "
             + taskContract.TaskEntry.COLUMN_RECCURING_PERIOD + " INTEGER NOT NULL DEFAULT 0, "
@@ -63,6 +81,7 @@ public class taskDBHelper extends SQLiteOpenHelper {
 
         db.execSQL(SQL_CREATE_Label_DATABASE);
         db.execSQL(SQL_CREATE_TASK_DATABASE);
+        db.execSQL(SQL_CREATE_HISTORY_DATABASE);
 
 
     }
@@ -73,6 +92,7 @@ public class taskDBHelper extends SQLiteOpenHelper {
         //onCreate(db);
         db.execSQL("DROP TABLE IF EXISTS "+ taskContract.TaskEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+taskContract.TaskEntry.LABEL_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+taskContract.TaskEntry.History_TABLE_NAME);
         onCreate(db);
     }
 }

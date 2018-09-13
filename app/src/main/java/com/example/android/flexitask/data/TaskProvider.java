@@ -32,6 +32,9 @@ public class TaskProvider extends ContentProvider {
     /** URI matcher code for the content URI for an individual task from the table */
     private static final int TASK_ID = 101;
 
+    /** URI matcher code for the content URI for history table */
+    private static final int HISTORY = 102;
+
 
     /** UriMatcher object to match a content URI to a corresponding code */
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -47,8 +50,8 @@ public class TaskProvider extends ContentProvider {
     static {
 
         sUriMatcher.addURI(taskContract.CONTENT_AUTHORITY,taskContract.PATH_Tasks,TASKS);
-
         sUriMatcher.addURI(taskContract.CONTENT_AUTHORITY,taskContract.PATH_Tasks +"/#",TASK_ID);
+        sUriMatcher.addURI(taskContract.CONTENT_AUTHORITY,taskContract.PATH_HISTORY,HISTORY);
 
     }
 
@@ -80,15 +83,12 @@ public class TaskProvider extends ContentProvider {
 
         switch (uriCode) {
 
-
             case TASKS:
                 //returns a cursor holding information for the entire table
                 cursor = database.query(taskContract.TaskEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
 
                 break;
-
-
             case TASK_ID:
 
                 //for every "?" in the selection string there needs to be an argument in the
@@ -100,6 +100,11 @@ public class TaskProvider extends ContentProvider {
 
                 //returns a cursor holding information for the given rowID
                 cursor = database.query(taskContract.TaskEntry.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+
+                break;
+            case HISTORY:
+                cursor = database.query(taskContract.TaskEntry.History_TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
 
                 break;
@@ -129,6 +134,8 @@ public class TaskProvider extends ContentProvider {
                 return taskContract.TaskEntry.CONTENT_LIST_TYPE;
             case TASK_ID:
                 return taskContract.TaskEntry.CONTENT_ITEM_TYPE;
+            case HISTORY:
+                return taskContract.TaskEntry.CONTENT_HISTORY_LIST_TYPE;
             default:
                 throw new IllegalStateException("Invalid URI");
         }
@@ -148,10 +155,8 @@ public class TaskProvider extends ContentProvider {
         */
         String title = values.getAsString(taskContract.TaskEntry.COLUMN_TASK_TITLE);
         if (TextUtils.isEmpty(title)) {
-
             Log.e(LOG_TAG, "Enter Name for row " + uri);
             throw new IllegalArgumentException("Task requires a title");
-
         }
 
         int uriCode = sUriMatcher.match(uri);
@@ -159,6 +164,8 @@ public class TaskProvider extends ContentProvider {
         switch (uriCode){
             case TASKS:
                 return insertTask(uri,values);
+            case HISTORY:
+                return insertHistory(uri,values);
             default:
                 throw new IllegalArgumentException("Query failed, URI wasn't for the whole table");
 
@@ -189,6 +196,35 @@ public class TaskProvider extends ContentProvider {
         // Notify all listeners that the data has changed
         getContext().getContentResolver().notifyChange(uri, null);
 
+
+        //returns the new URI
+        return ContentUris.withAppendedId(uri,id);
+
+    }
+
+
+    /**
+     * Helper insert Method for {@link TaskProvider#insert(Uri, ContentValues)}
+     * creates a writeable version of the databae and inserts the contentValues into the history table
+     *
+     * @param uri so the app can notify the corresponding cursor observer of the recent changes
+     * @param values containe both data for the task and the column names to insert those values into
+     * @return URI for the newly inserted row
+     *
+     */
+    private Uri insertHistory(Uri uri, ContentValues values){
+        // Get writeable database
+        SQLiteDatabase database = mdbHelper.getWritableDatabase();
+        // Insert the new Task with the provided content values
+        long id = database.insert(taskContract.TaskEntry.History_TABLE_NAME, null, values);
+
+        // If the ID is -1, then the insertion didn't work. Log an error and return null to exit.
+        if (id == -1) {
+            Log.e(LOG_TAG, "row " + uri +" failed to insert history");
+            return null;
+        }
+        // Notify all listeners that the data has changed
+        getContext().getContentResolver().notifyChange(uri, null);
 
         //returns the new URI
         return ContentUris.withAppendedId(uri,id);

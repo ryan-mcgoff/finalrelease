@@ -29,6 +29,7 @@
                 android:value=".mainActivity" />
         </activity>
         <activity android:name=".FlexiTaskEditor" />
+        <activity android:name=".ProductivityActivity" />
 
         <provider
             android:name=".data.TaskProvider"
@@ -36,6 +37,10 @@
             android:exported="false" />
         <receiver
             android:name="AlertReceiver"
+            android:enabled="true">
+        </receiver>
+        <receiver
+            android:name="AlertReceiverReminder"
             android:enabled="true">
         </receiver>
 

@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 
 /**
  * Created by rymcg on 6/09/2018.
@@ -23,7 +26,38 @@ public class TaskReminderDialog extends AppCompatDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.task_reminder_dialog,null);
+        final View view = inflater.inflate(R.layout.task_reminder_dialog,null);
+
+        String units = getArguments().getString("units");
+        String unitsBefore = getArguments().getString("unitsBefore");
+
+        if(units.equals("")&&unitsBefore.equals("")){
+            RadioButton b = (RadioButton) view.findViewById(R.id.minsBefore);
+            b.setChecked(true);
+        }
+        else{
+            EditText unitsView = view.findViewById(R.id.editReminderUnits);
+            unitsView.setText(units);
+            switch(unitsBefore){
+                case "Hours before":
+                    RadioButton bHour = (RadioButton) view.findViewById(R.id.hoursBefore);
+                    bHour.setChecked(true);
+                    break;
+                case "Days before":
+                    RadioButton bDay = (RadioButton) view.findViewById(R.id.daysBefore);
+                    bDay.setChecked(true);
+                    break;
+                case "Weeks before":
+                    RadioButton bWeek = (RadioButton) view.findViewById(R.id.weeksBefore);
+                    bWeek.setChecked(true);
+                    break;
+                default:
+                    RadioButton bMin = (RadioButton) view.findViewById(R.id.minsBefore);
+                    bMin.setChecked(true);
+            }
+        }
+
+
 
 
         builder.setView(view)
@@ -38,7 +72,14 @@ public class TaskReminderDialog extends AppCompatDialogFragment {
             public void onClick(DialogInterface dialog, int which) {
 
                 String units = editUnitReminder.getText().toString();
-                listener.applyNotificationReminder(units);
+
+                RadioGroup radioGroup = view.findViewById(R.id.unitsBeforeRadioGroup);
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                RadioButton selectedRadio =  view.findViewById(selectedId);
+
+                String unitsBefore = selectedRadio.getText().toString();
+
+                listener.applyNotificationReminder(units,unitsBefore);
 
 
             }
@@ -62,7 +103,7 @@ public class TaskReminderDialog extends AppCompatDialogFragment {
     }
 
     public interface TaskReminderDialogListener{
-        void applyNotificationReminder (String unitsReminder);
+        void applyNotificationReminder (String unitsReminder,String unitsBefore);
     }
 
 }

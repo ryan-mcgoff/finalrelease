@@ -204,7 +204,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/RecurringTextLabel"
                 android:layout_toEndOf="@+id/RecurringImage"
-                android:layout_toRightOf="@+id/RecurringImage"
                 android:contentDescription="click to select recurring period">
 
             </Spinner>
@@ -236,15 +235,13 @@
                     android:text="days" />
             </LinearLayout>
 
-
-
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:contentDescription="time selector"
+            android:contentDescription="label selector"
             android:padding="8dp">
 
         <ImageView
@@ -281,6 +278,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="Set Reminder"
+                android:onClick="openDialog"
+                android:focusable="true"
                 android:padding="8dp">
 
                 <ImageView

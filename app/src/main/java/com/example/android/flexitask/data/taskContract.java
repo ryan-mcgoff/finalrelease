@@ -25,20 +25,26 @@ public final class taskContract {
     public static final String CONTENT_AUTHORITY = "com.example.android.flexitask";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_Tasks = "tasks";
+    public static final String PATH_HISTORY = "history";
+
+
 
 
 
     public static final class TaskEntry implements BaseColumns{
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_Tasks);
+        public static final Uri HISTORY_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_HISTORY);
+
 
         /** Name of database table for the tasks */
         public final static String TABLE_NAME = "tasks";
         public final static String LABEL_TABLE_NAME = "labels";
+        public final static String History_TABLE_NAME = "history";
 
         public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_Tasks;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_Tasks;
-
+        public static final String CONTENT_HISTORY_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_HISTORY;
         /**
          * Unique ID number for each task
          *
@@ -88,6 +94,8 @@ public final class taskContract {
         public final static String COLUMN_DATE = "date";
 
         public final static String COLUMN_DATETIME = "datetime";
+        public final static String COLUMN_REMINDER_UNIT = "reminderunit";
+        public final static String COLUMN_REMINDER_UNIT_BEFORE = "reminderunitbefore";
 
         /**
          * Time for the task (for Fixed tasks).

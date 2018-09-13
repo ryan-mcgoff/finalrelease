@@ -95,7 +95,7 @@ public class TimePreferenceDialogFragmentCompat extends PreferenceDialogFragment
 
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
             Intent intent = new Intent(getContext(),AlertReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),1,intent,0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),0,intent,0);
 
             alarmManager.setExact(AlarmManager.RTC_WAKEUP,timePickerC.getTimeInMillis(),pendingIntent);
 

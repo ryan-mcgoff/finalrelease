@@ -1,6 +1,7 @@
 package com.example.android.flexitask;
 
 
+import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -20,12 +21,15 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -71,6 +75,10 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
     private String labelSQL;
 
     private String label;
+
+    private ImageView editButtonToolBar;
+    private ImageView doneButtonToolBar;
+    private ImageView deleteButtonToolBar;
 
 
 
@@ -128,6 +136,9 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         timeLineListView.setAdapter(mTaskCursorAdaptor);
 
         bottomBar = rootView.findViewById(R.id.toolbar);
+        editButtonToolBar = bottomBar.findViewById(R.id.edit);
+        doneButtonToolBar = bottomBar.findViewById(R.id.done);
+        deleteButtonToolBar = bottomBar.findViewById(R.id.delete);
 
         //On click listener for anytime a user clicks on a listView item
         timeLineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,12 +153,30 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
                     timeLineListView.setItemChecked(position, true);
 
+                    Animation fabDown = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+                    Animation slideUpBar = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                    Animation slideUpDone = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                    Animation slideUpEdit = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                    Animation slideUpDel = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                    slideUpBar.setStartOffset(150);
+                    slideUpDone.setStartOffset(170);
+                    slideUpEdit.setStartOffset(230);
+                    slideUpDel.setStartOffset(280);
+
                     getActivity().setTitle("task selected");
                     toolBarShown = true;
                     mFabFixedTask.setVisibility(View.GONE);
 
-
+                    Animation bottomUp = AnimationUtils.loadAnimation(getContext(), R.anim.show_from_bottom);
+                    mFabFixedTask.startAnimation(fabDown);
                     bottomBar.setVisibility(View.VISIBLE);
+                    doneButtonToolBar.setVisibility(View.VISIBLE);
+                    editButtonToolBar.setVisibility(View.VISIBLE);
+                    deleteButtonToolBar.setVisibility(View.VISIBLE);
+                    bottomBar.startAnimation(slideUpBar);
+                    doneButtonToolBar.startAnimation(slideUpDone);
+                    editButtonToolBar.startAnimation(slideUpEdit);
+                    deleteButtonToolBar.startAnimation(slideUpDel);
                 } else {
                     lastClickedPostion = position;
                     lastClickedID = id;
@@ -167,7 +196,6 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         /**EDITING BUTTON -
          * gets the URI for the selected list item, and sends it to the editor activity for processing
          */
-        ImageView editButtonToolBar = bottomBar.findViewById(R.id.edit);
         editButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,7 +220,6 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
          * When the done button (tick) on the toolbar has been selected, the app updates
          * the date for that task based on the recurring period. Or if it doesn't have one it simply deletes that task
          */
-        ImageView doneButtonToolBar = bottomBar.findViewById(R.id.done);
         doneButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,30 +228,52 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 //would be "content.example.android.flexitask/task" + "3" (the ID)
                 Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
 
+                Cursor cursorc = getActivity().getContentResolver().query(currentTaskUri,null,null,null,null,null);
                 SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
+
+
                 //Creates a raw SQL statment to retrieve the recurring number and due date for the selected task
-                Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.TABLE_NAME +
-                        " WHERE " + taskContract.TaskEntry._ID + " = " + lastClickedID, null);
+
                 if (cursorc.moveToFirst()) {
                     int recurringColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
                     int dateColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_DATE);
-
+                    int titleColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_TASK_TITLE);
+                    String mtitle = cursorc.getString(titleColumnIndex);
                     int recurringNumber = cursorc.getInt(recurringColumnIndex);
                     long dateLong = cursorc.getLong(dateColumnIndex);
 
-
                     long todayDate = Calendar.getInstance().getTimeInMillis();
+
+                    // Data to add to the history database
+                    ContentValues cvHistory = new ContentValues();
+                    String title = cursorc.getString(titleColumnIndex);
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, title);
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_DESCRIPTION,"S");
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_TYPE_TASK,taskContract.TaskEntry.TYPE_FIXED);
+
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, String.valueOf(todayDate));
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_STATUS, String.valueOf(0));
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_DATE, String.valueOf(todayDate));
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_DATETIME, String.valueOf(todayDate));
+
+
                     //if there isn't a recurring period selected for that task, then delete it
                     if (recurringNumber == 0) {
                         currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
-                        ContentValues cv = new ContentValues();
-                        cv.put(taskContract.TaskEntry.COLUMN_STATUS, String.valueOf(0));
 
-                        cv.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, todayDate);
+                        Calendar c = Calendar.getInstance();
 
-                        db.update(taskContract.TaskEntry.TABLE_NAME, cv, taskContract.TaskEntry._ID
-                                + " = " + lastClickedID, null);
+                        long historyDate = c.getTimeInMillis();
+                        // getlast complted + recurring days
+                        int lastCompletedColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_LAST_COMPLETED);
+                        int RecurringColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
+
+                        getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
+                        getActivity().getContentResolver().delete(currentTaskUri,null,null);
+
+
+
                     }
                     //if there is a recurring period for that task, and the task isn't
                     // overdue (date>todayDate) yet, then update the tasks due date then add the number of recurring days for the
@@ -234,11 +283,13 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                         //the number of days in a millisecond to convert the recurring number of days into milliseconds
                         dateLong += 86400000L * recurringNumber;
                         ContentValues cv = new ContentValues();
+                        cv.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, mtitle);
                         cv.put(taskContract.TaskEntry.COLUMN_DATE, dateLong);
 
                         //update task with new due date
-                        db.update(taskContract.TaskEntry.TABLE_NAME, cv, taskContract.TaskEntry._ID
-                                + " = " + lastClickedID, null);
+                        getActivity().getContentResolver().update(currentTaskUri,cv,null,null);
+                        getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
+
 
                     } else {
                         // if task is overdue, then find the next due date for the task that is bigger than today's date
@@ -246,9 +297,10 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                             //Log.v("CatalogActivity", dateLong + " rows deleted from the database");
                             dateLong += recurringNumber * 86400000L;
                             ContentValues cv = new ContentValues();
+                            cv.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, mtitle);
                             cv.put(taskContract.TaskEntry.COLUMN_DATE, dateLong);
-                            db.update(taskContract.TaskEntry.TABLE_NAME, cv, taskContract.TaskEntry._ID
-                                    + " = " + lastClickedID, null);
+                            getActivity().getContentResolver().update(currentTaskUri,cv,null,null);
+                            getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
                         }
                     }
                 }
@@ -265,24 +317,13 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         /* DELETE BUTTON -
         * gets the URI for the selected listitem, and deletes it by calling cthe content resolver*/
-        ImageView deleteButtonToolBar = bottomBar.findViewById(R.id.delete);
         deleteButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //creates a URI for the specific task that was clicked on
-                //ie: task on row three
-                //would be "content.example.android.flexitask/task" + "3" (the ID)
-                timeLineListView.setItemChecked(lastClickedPostion, false);
+                Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
+                getActivity().getContentResolver().delete(currentTaskUri, null, null);
                 resetUI();
-                SQLiteDatabase db = mDbHelper.getWritableDatabase();
-                ContentValues cv = new ContentValues();
-                cv.put(taskContract.TaskEntry.COLUMN_STATUS, String.valueOf(0));
-                db.update(taskContract.TaskEntry.TABLE_NAME, cv, taskContract.TaskEntry._ID
-                        + " = " + lastClickedID, null);
-                getLoaderManager().restartLoader(TASKLOADER, null, FixedTaskTimeLine.this);
-                //Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
-                //getActivity().getContentResolver().delete(currentTaskUri, null, null);
 
             }
         });
@@ -346,7 +387,28 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         }else{
             getActivity().setTitle(label);
         }
+        Animation fabUp = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+        Animation slideDownBar = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+        Animation slideDownDone = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+        Animation slideDownEdit = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+        Animation slideDownDel = AnimationUtils.loadAnimation(getContext(), R.anim.scale_down);
+
+        slideDownEdit.setStartOffset(80);
+        slideDownDel.setStartOffset(160);
+        slideDownBar.setStartOffset(180);
+        fabUp.setStartOffset(210);
+
+        doneButtonToolBar.startAnimation(slideDownDone);
+        editButtonToolBar.startAnimation(slideDownEdit);
+        editButtonToolBar.startAnimation(slideDownEdit);
+        deleteButtonToolBar.startAnimation(slideDownDel);
+        bottomBar.startAnimation(slideDownBar);
+        mFabFixedTask.startAnimation(fabUp);
+
         bottomBar.setVisibility(View.GONE);
+        doneButtonToolBar.setVisibility(View.GONE);
+        editButtonToolBar.setVisibility(View.GONE);
+        deleteButtonToolBar.setVisibility(View.GONE);
         mFabFixedTask.setVisibility(View.VISIBLE);
         toolBarShown = false;
     }

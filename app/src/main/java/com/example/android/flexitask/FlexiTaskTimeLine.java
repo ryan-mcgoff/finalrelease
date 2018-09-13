@@ -182,8 +182,6 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                     toolBarShown = true;
                     mFabFlexi.setVisibility(View.GONE);
 
-
-
                     Animation bottomUp = AnimationUtils.loadAnimation(getContext(), R.anim.show_from_bottom);
                     mFabFlexi.startAnimation(fabDown);
                     bottomBar.setVisibility(View.VISIBLE);
@@ -251,11 +249,15 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         doneButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+                Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
 
                 //db.query()
-                Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.TABLE_NAME +
-                        " WHERE " + taskContract.TaskEntry._ID + " = " + lastClickedID, null);
+                //Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.TABLE_NAME +
+                //        " WHERE " + taskContract.TaskEntry._ID + " = " + lastClickedID, null);
+
+                Cursor cursorc = getActivity().getContentResolver().query(currentTaskUri,null,null,null,null,null);
+
                 if (cursorc.moveToFirst()) {
                     Calendar c = Calendar.getInstance();
                     c.set(Calendar.HOUR_OF_DAY, 0);
@@ -263,25 +265,45 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                     c.set(Calendar.SECOND, 0);
 
                     long todayDate = c.getTimeInMillis();
-                    //getlast complted + recurring days
+                    // getlast complted + recurring days
                     int lastCompletedColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_LAST_COMPLETED);
+                    int titleColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_TASK_TITLE);
                     int RecurringColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
+
+                    // Data to add to the history database
+                    ContentValues cvHistory = new ContentValues();
+                    String title = cursorc.getString(titleColumnIndex);
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, title);
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_DESCRIPTION,"S");
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_TYPE_TASK,taskContract.TaskEntry.TYPE_FLEXI);
+
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, String.valueOf(todayDate));
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_STATUS, String.valueOf(0));
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_DATE, String.valueOf(todayDate));
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_DATETIME, String.valueOf(todayDate));
+
+                    getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
+
 
                     // get the values from the Cursor for the given column index
                     int mNumberOfRecurringDays = cursorc.getInt(RecurringColumnIndex);
                     long mDateLastCompleted = cursorc.getLong(lastCompletedColumnIndex);
-                   long mDueDate = mDateLastCompleted + (86400000L * mNumberOfRecurringDays);
+                    long mtitle = cursorc.getLong(titleColumnIndex);
+
+                    long mDueDate = mDateLastCompleted + (86400000L * mNumberOfRecurringDays);
 
                     ContentValues cv = new ContentValues();
+                    cv.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, mtitle);
                     cv.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, String.valueOf(todayDate));
                     cv.put(taskContract.TaskEntry.COLUMN_DATE,String.valueOf(mDueDate));
 
-                    db.update(taskContract.TaskEntry.TABLE_NAME, cv, taskContract.TaskEntry._ID
-                            + " = " + lastClickedID, null);
+                    getContext().getContentResolver().update(currentTaskUri,cv,null,null);
+                    getContext().getContentResolver().notifyChange(currentTaskUri,null);
+
                 }
 
                 mTaskCursorAdaptor.notifyDataSetChanged();
-
+                cursorc.close();
                 timeLineListView.setItemChecked(lastClickedPostion, false);
                 resetUI();
                 getLoaderManager().restartLoader(TASKLOADER, null, FlexiTaskTimeLine.this);
@@ -296,21 +318,13 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         deleteButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //creates a URI for the specific task that was clicked on
                 //ie: task on row three
                 //would be "content.example.android.flexitask/task" + "3" (the ID)
                 timeLineListView.setItemChecked(lastClickedPostion, false);
                 resetUI();
-                SQLiteDatabase db = mDbHelper.getWritableDatabase();
-                ContentValues cv = new ContentValues();
-                cv.put(taskContract.TaskEntry.COLUMN_STATUS, String.valueOf(0));
-                db.update(taskContract.TaskEntry.TABLE_NAME, cv, taskContract.TaskEntry._ID
-                        + " = " + lastClickedID, null);
-                getLoaderManager().restartLoader(TASKLOADER, null, FlexiTaskTimeLine.this);
-                //Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
-                //getActivity().getContentResolver().delete(currentTaskUri, null, null);
-
+                Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
+                getActivity().getContentResolver().delete(currentTaskUri,null,null);
 
             }
         });
@@ -390,10 +404,6 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         deleteButtonToolBar.startAnimation(slideDownDel);
         bottomBar.startAnimation(slideDownBar);
         mFabFlexi.startAnimation(fabUp);
-
-
-
-
 
         bottomBar.setVisibility(View.GONE);
         doneButtonToolBar.setVisibility(View.GONE);

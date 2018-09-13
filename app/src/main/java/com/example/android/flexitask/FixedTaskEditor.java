@@ -1,9 +1,12 @@
 package com.example.android.flexitask;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -131,6 +134,11 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
 
     private AppBarLayout appbar;
 
+    private String mReminderUnit;
+    private String mReminderUnitBefore;
+
+    private int mID;
+
 
     /**
      * Boolean flag that keeps track of whether the Task has been edited (true) or not (false)
@@ -234,6 +242,8 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
          * */
         if (uriCurrentTask == null) {
             setTitle("Create a task");
+            mReminderUnit = "";
+            mReminderUnitBefore = "";
 
             //get Todays date and set up private variables for calander to use
 
@@ -480,6 +490,8 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         values.put(taskContract.TaskEntry.COLUMN_DATE, mDate);
         values.put(taskContract.TaskEntry.COLUMN_DESCRIPTION, description);
         values.put(taskContract.TaskEntry.COLUMN_HISTORY, "c");
+        values.put(taskContract.TaskEntry.COLUMN_REMINDER_UNIT,mReminderUnit);
+        values.put(taskContract.TaskEntry.COLUMN_REMINDER_UNIT_BEFORE,mReminderUnitBefore);
         values.put(taskContract.TaskEntry.COLUMN_STATUS, 1);
         values.put(taskContract.TaskEntry.COLUMN_DATETIME,calendar.getTimeInMillis());
         values.put(taskContract.TaskEntry.COLUMN_LABEL,mLabelSpinner.getSelectedItem().toString());
@@ -498,11 +510,15 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 Toast.makeText(this, "Error with saving task", Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the insertion was successful and we can display a toast with the row ID.
-                Toast.makeText(this, "Task saved successfully!", Toast.LENGTH_SHORT).show();
+                long id = Long.valueOf(insertUri.getLastPathSegment());
+                Toast.makeText(this, "Task saved successfully! " + String.valueOf(id), Toast.LENGTH_SHORT).show();
+                setReminderAlarm((int)id);
             }
         } else {
             //if there is a URI, that means the user is requesting an update to an existing task
-            getContentResolver().update(uriCurrentTask, values, null, null);
+            int updateURI = getContentResolver().update(uriCurrentTask, values, null, null);
+            Toast.makeText(this, "Task updated successfully! " + String.valueOf(mID), Toast.LENGTH_SHORT).show();
+            setReminderAlarm((int)mID);
         }
 
         finish();
@@ -605,8 +621,11 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                     taskContract.TaskEntry.COLUMN_DESCRIPTION,
                     taskContract.TaskEntry.COLUMN_LAST_COMPLETED,
                     taskContract.TaskEntry.COLUMN_TYPE_TASK,
+                    taskContract.TaskEntry._ID,
                     taskContract.TaskEntry.COLUMN_DATE,
                     taskContract.TaskEntry.COLUMN_TIME,
+                    taskContract.TaskEntry.COLUMN_REMINDER_UNIT_BEFORE,
+                    taskContract.TaskEntry.COLUMN_REMINDER_UNIT,
                     taskContract.TaskEntry.COLUMN_LABEL,
                     taskContract.TaskEntry.COLUMN_HISTORY,
                     taskContract.TaskEntry.COLUMN_STATUS,
@@ -638,11 +657,14 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
             if (data.moveToFirst()) {
                 /*Find the columns of Task attributes needed in this class {@link FixedTaskEditor}*/
                 int titleColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_TASK_TITLE);
+                int idColumnIndex = data.getColumnIndex(taskContract.TaskEntry._ID);
                 int descriptionColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_DESCRIPTION);
                 int dateColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_DATE);
                 int timeColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_TIME);
                 int RecurringColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
                 int labelColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_LABEL);
+                int reminderUnitColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT);
+                int reminderUnitBeforeColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT_BEFORE);
 
                 /*Retrieve the values from the {@link #loader} cursor for the given column index*/
                 String titleString = data.getString(titleColumnIndex);
@@ -650,6 +672,9 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 long dateLong = data.getLong(dateColumnIndex);
                 String timeString = data.getString(timeColumnIndex);
                 int recurringDaysInt = data.getInt(RecurringColumnIndex);
+                String reminderUnit = data.getString(reminderUnitColumnIndex);
+                String reminderUnitBefore = data.getString(reminderUnitBeforeColumnIndex);
+                int id = data.getInt(idColumnIndex);
 
 
                 /**set values for{@link #mDate},{@link #mTime}*/
@@ -657,6 +682,9 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 mTime = timeString;
                 mRecurringDaysEditMode = recurringDaysInt;
                 mLabel = data.getString(labelColumnIndex);
+                mReminderUnit = reminderUnit;
+                mReminderUnitBefore = reminderUnitBefore;
+                mID = id;
 
                 //Sets the Label spinner to the value for that row
                 for(int i =0; i<mLabelSpinner.getCount();i++){
@@ -708,6 +736,11 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 String chosenDateAsString = DateFormat.getDateInstance().format(c.getTime());
                 TextView dateLabel = (TextView) findViewById(R.id.dateDiplayLabel);
                 dateLabel.setText(chosenDateAsString);
+                TextView reminderLabel = (TextView) findViewById(R.id.reminderDisplayLabel);
+                if(!(mReminderUnitBefore.isEmpty()&&mReminderUnit.isEmpty())){
+                    reminderLabel.setText(mReminderUnit+" "+ mReminderUnitBefore);
+
+                }
 
             }
         }
@@ -740,30 +773,45 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         return timeString;
     }
 
-    /**Called when the alarm {@link android.support.design.widget.FloatingActionButton} is clicked*/
-    public void setalarm(View view) {
-        Animation test = AnimationUtils.loadAnimation(this,R.anim.scale_up);
-        view.startAnimation(test);
-        FloatingActionButton fab = (FloatingActionButton) view;
-        fab.setSelected(true);
-        fab.setImageResource(R.drawable.ic_alarm_off_black_24dp);
-        openDialog();
-    }
-
-    private void openDialog(){
-
+    /**Called when set reminder layout is clicked*/
+    public void openDialog(View view){
         TaskReminderDialog taskReminderDialog = new TaskReminderDialog();
+        Bundle args = new Bundle();
+        args.putString("units",mReminderUnit);
+        args.putString("unitsBefore",mReminderUnitBefore);
+        taskReminderDialog.setArguments(args);
         taskReminderDialog.show(getSupportFragmentManager(),"newTaskLabelDialog");
-
-
     }
 
 
+    private void setReminderAlarm(int taskID){
+
+        Log.e("alarm: ", "Alarm NOT schedule for today");
+
+        //Makes sure there is a valid reminder date
+        if (!(mReminderUnitBefore.equals("") || mReminderUnit.equals(""))){
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            Intent intent = new Intent(this,AlertReceiverReminder.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this,taskID,intent,0);
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,(calendar.getTimeInMillis()+30000),pendingIntent);
+            Log.e("alarm: ", "Alarm will schedule for today");
+
+        }
+
+    }
 
     @Override
-    public void applyNotificationReminder(String unitsReminder) {
+    public void applyNotificationReminder(String unitsReminder, String unitsBefore) {
 
-        Log.w("reminder units", unitsReminder);
+        if (!(unitsBefore.equals("") || unitsReminder.equals(""))){
+            TextView reminder = findViewById(R.id.reminderDisplayLabel);
+            String displayText = unitsReminder+" "+ unitsBefore.toLowerCase();
+            reminder.setText(displayText);
+            mReminderUnit = unitsReminder;
+            mReminderUnitBefore = unitsBefore;
+        }
     }
 
     /**Takes user back to previous timeline activity**/

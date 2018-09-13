@@ -89,6 +89,18 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         MenuItem menuItem = null;
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        View header = navigationView.getHeaderView(0);
+
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                headerOnClick();
+
+            }
+        });
+
+
         displayView(R.id.nav_tasks,menuItem);
 
         menu = navigationView.getMenu();
@@ -142,7 +154,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             Intent intent = new Intent(this,AlertReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1,intent,0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
 
             alarmManager.setExact(AlarmManager.RTC_WAKEUP,timePickerC.getTimeInMillis(),pendingIntent);
 
@@ -150,10 +162,6 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("label","all");
             editor.commit();
-
-
-
-
 
         }
 
@@ -163,6 +171,11 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         displayView(item.getItemId(),item);
 
         return true;
+    }
+
+    public void headerOnClick(){
+        Intent intent = new Intent(this, ProductivityActivity.class);
+        startActivity(intent);
     }
 
     /**Checks which fragment the user has cliked on in the in the navigation draw
@@ -200,7 +213,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
 
                 break;
             default:
-                item.setIcon(R.drawable.oval_shape);
+                item.setChecked(true);
                 title = item.getTitle().toString();
                 SharedPreferences.Editor editor2 = sharedPreferences.edit();
                 editor2.putString("label",title);
@@ -275,8 +288,6 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         Menu menu = navigationView.getMenu();
         subMenu.add(newTextLabel);
         navigationView.setNavigationItemSelectedListener(this);
-
-
 
 
     }

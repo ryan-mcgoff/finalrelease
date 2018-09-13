@@ -41,7 +41,7 @@ public class AlertReceiver extends BroadcastReceiver {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         //Array list to store task titles;
         ArrayList <String> notificationMessage = new ArrayList<String>();
-        //todays date
+        //today's date
         long today = Calendar.getInstance().getTimeInMillis();
         long m7DaysAhead = today + 604800000;
 
@@ -57,7 +57,7 @@ public class AlertReceiver extends BroadcastReceiver {
         }
         //Calls notification helper to build notification, and then broadcasts it
         NotificationHelper mNotificationHelper = new NotificationHelper(context);
-        NotificationCompat.Builder nb = mNotificationHelper.getChannel("s",notificationMessage);
+        NotificationCompat.Builder nb = mNotificationHelper.getChannel("Daily Summary",notificationMessage);
         mNotificationHelper.getNotificationManager().notify(1,nb.build());
 
         //Creates new alarm for daily notification for tomorrow based on the user's notification preferences
@@ -70,7 +70,7 @@ public class AlertReceiver extends BroadcastReceiver {
         c.add(Calendar.DAY_OF_YEAR, 1); //add day
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,1,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,intent,0);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent);
     }
 }
