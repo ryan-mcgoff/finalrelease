@@ -303,6 +303,13 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 }
 
                 mTaskCursorAdaptor.notifyDataSetChanged();
+                //gte number
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                int flexiCount = preferences.getInt("flexiCount", 0);
+                SharedPreferences.Editor editor = preferences.edit();
+                flexiCount++;
+                editor.putInt("flexiCount",flexiCount);
+                editor.apply();
                 cursorc.close();
                 timeLineListView.setItemChecked(lastClickedPostion, false);
                 resetUI();

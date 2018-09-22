@@ -25,6 +25,7 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     testImplementation 'junit:junit:4.12'
     implementation 'com.github.clans:fab:1.6.4'
+    implementation 'me.itangqi.waveloadingview:library:0.3.5'
     implementation 'com.android.support:preference-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:design:27.1.1'

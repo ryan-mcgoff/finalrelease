@@ -304,6 +304,14 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                         }
                     }
                 }
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                int fixedCount = preferences.getInt("fixedCount", 0);
+                SharedPreferences.Editor editor = preferences.edit();
+                fixedCount++;
+                editor.putInt("fixedCount",fixedCount);
+                editor.apply();
+
                 //reset loader to show new changes
                 getLoaderManager().restartLoader(TASKLOADER, null, FixedTaskTimeLine.this);
                 //unselect item and reset UI after changes have been made

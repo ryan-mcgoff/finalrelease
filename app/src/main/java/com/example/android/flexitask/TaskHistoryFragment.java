@@ -227,11 +227,18 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
 
         if(dateFilter!=todayDate){
             Log.v("Date", "date FIlter not equal to today");
-            WHERE+= taskContract.TaskEntry.COLUMN_LAST_COMPLETED + ">"+String.valueOf(dateFilter);
+            WHERE= taskContract.TaskEntry.COLUMN_LAST_COMPLETED + ">"+String.valueOf(dateFilter);
+            if(taskFilter!=taskContract.TaskEntry.TYPE_ALL) {
+                WHERE += " AND task_type = ' " + String.valueOf(taskFilter) + "'";
+            }
         }
-        if(taskFilter!= taskContract.TaskEntry.TYPE_ALL){
-            WHERE+= " AND task_type = ' " + String.valueOf(taskFilter)+"'";
+        else{
+            if(taskFilter!=taskContract.TaskEntry.TYPE_ALL) {
+                WHERE += " task_type = ' " + String.valueOf(taskFilter) + "'";
+            }
         }
+
+
 
         return new CursorLoader(getActivity(),
                 taskContract.TaskEntry.HISTORY_URI,
