@@ -312,6 +312,12 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 editor.putInt("fixedCount",fixedCount);
                 editor.apply();
 
+                long weeklygoalCount = preferences.getLong("weekTasks", 0);
+                SharedPreferences.Editor editor2 = preferences.edit();
+                weeklygoalCount++;
+                editor2.putLong("weekTasks",weeklygoalCount);
+                editor2.apply();
+
                 //reset loader to show new changes
                 getLoaderManager().restartLoader(TASKLOADER, null, FixedTaskTimeLine.this);
                 //unselect item and reset UI after changes have been made

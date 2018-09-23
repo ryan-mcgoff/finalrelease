@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import me.itangqi.waveloadingview.WaveLoadingView;
@@ -26,7 +27,6 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         WaveLoadingView waveLoadingView = findViewById(R.id.waveView);
-        waveLoadingView.setProgressValue(70);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         TextView flexiCount = findViewById(R.id.flexiCount);
@@ -38,6 +38,33 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         fixedCount.setText(String.valueOf(fixedCountInt));
         totalCount.setText(String.valueOf(flexiCountInt+fixedCountInt));
 
+        //get goal value and week completed tasks value
+        TextView goalDisplay = findViewById(R.id.goalDisplayLabel);
+        long weekTasks = preferences.getLong("weekTasks",0);
+        long goal = preferences.getInt("goal",0);
+
+        String goalDisplayMessage = String.valueOf(weekTasks) + "/" + String.valueOf(goal) + " Tasks";
+
+        int percentage = (int) ((weekTasks*100/goal));
+
+        totalCount.setText(String.valueOf(percentage));
+
+
+        if(percentage>100){
+            waveLoadingView.setProgressValue(100);
+
+        }
+        else{
+            waveLoadingView.setProgressValue(percentage);
+        }
+
+        goalDisplay.setText(goalDisplayMessage);
+
+
+    }
+
+    public void resetLabel(){
+
     }
 
     @Override
@@ -46,12 +73,20 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         return true;
     }
 
+
+    /**Called when Edit Button is clicked*/
+    public void openDialog(View view){
+        EditWeeklyGoalDialog goalDialog = new EditWeeklyGoalDialog();
+        goalDialog.show(getSupportFragmentManager(),"newEditGoalDialog");
+    }
+
+
     @Override
     public void applyNewGoal(int goal) {
         //set Goal
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor preferencesEdit =preferences.edit().putInt("goal",goal);
-        preferencesEdit.commit();
+        preferencesEdit.apply();
 
 
     }

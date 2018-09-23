@@ -3,9 +3,11 @@ package com.example.android.flexitask;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -28,8 +30,11 @@ public class EditWeeklyGoalDialog extends AppCompatDialogFragment {
 
         View view = inflater.inflate(R.layout.goal_dialog,null);
 
-       TextView editGoal = view.findViewById(R.id.edit_goal);
-       editGoal.setText("0");
+       final TextView editGoal = view.findViewById(R.id.edit_goal);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String goalValue =  String.valueOf(preferences.getInt("goal",3));
+       editGoal.setText(goalValue);
 
         builder.setView(view).setTitle("Weekly Goal")
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -41,13 +46,13 @@ public class EditWeeklyGoalDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        int goalValue = Integer.valueOf(editTextLabelName.getText().toString());
+                        int goalValue = Integer.valueOf(editGoal.getText().toString());
                         listener.applyNewGoal(goalValue);
 
                     }
                 });
 
-        editTextLabelName = view.findViewById(R.id.edit_label_name);
+        //editTextLabelName = view.findViewById(R.id.edit_label_name);
 
 
         return builder.create();

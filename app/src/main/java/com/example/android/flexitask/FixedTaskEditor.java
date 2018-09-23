@@ -512,13 +512,13 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 // Otherwise, the insertion was successful and we can display a toast with the row ID.
                 long id = Long.valueOf(insertUri.getLastPathSegment());
                 Toast.makeText(this, "Task saved successfully! " + String.valueOf(id), Toast.LENGTH_SHORT).show();
-                setReminderAlarm((int)id);
+                setReminderAlarm((int)id, taskTitle,calendar.getTimeInMillis() );
             }
         } else {
             //if there is a URI, that means the user is requesting an update to an existing task
             int updateURI = getContentResolver().update(uriCurrentTask, values, null, null);
             Toast.makeText(this, "Task updated successfully! " + String.valueOf(mID), Toast.LENGTH_SHORT).show();
-            setReminderAlarm((int)mID);
+            setReminderAlarm((int)mID, taskTitle, calendar.getTimeInMillis());
         }
 
         finish();
@@ -784,20 +784,45 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
     }
 
 
-    private void setReminderAlarm(int taskID){
+    private void setReminderAlarm(int taskID, String taskTitle, long Duedate){
 
-        Log.e("alarm: ", "Alarm NOT schedule for today");
+        Log.e("alarm: ", "Alarm NOT schedule for today" + mReminderUnitBefore);
 
         //Makes sure there is a valid reminder date
         if (!(mReminderUnitBefore.equals("") || mReminderUnit.equals(""))){
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             Intent intent = new Intent(this,AlertReceiverReminder.class);
+            intent.putExtra("title", taskTitle);
+            intent.putExtra("date", Duedate);
+
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this,taskID,intent,0);
 
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,(calendar.getTimeInMillis()+30000),pendingIntent);
-            Log.e("alarm: ", "Alarm will schedule for today");
+            //get time before for new due date item
 
+
+            int reminderValue = 3000;
+
+            Calendar reminderCalander = Calendar.getInstance();
+            reminderCalander.setTimeInMillis(calendar.getTimeInMillis());
+
+            switch (mReminderUnitBefore){
+                case("Minutes before"):
+                    reminderCalander.add(Calendar.MINUTE,-Integer.valueOf(mReminderUnit));
+                    break;
+                case("Hours before"):
+                    reminderCalander.add(Calendar.HOUR_OF_DAY,-Integer.valueOf(mReminderUnit));
+                    break;
+                case("Days before"):
+                    reminderCalander.add(Calendar.DAY_OF_YEAR,-Integer.valueOf(mReminderUnit));
+                    break;
+
+                case("Weeks before"):
+                    reminderCalander.add(Calendar.WEEK_OF_YEAR,-Integer.valueOf(mReminderUnit));
+                    break;
+            }
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,(reminderCalander.getTimeInMillis()-reminderValue),pendingIntent);
         }
 
     }

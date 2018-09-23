@@ -68,6 +68,22 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
 
         Log.e("main: ","MAIN YO");
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        long goalWeek = preferences.getLong("goalWeek",0);
+        //checks if its a new week
+        Calendar calanderGoal = Calendar.getInstance();
+        long thisWeek = calanderGoal.get(Calendar.WEEK_OF_YEAR);
+
+        if ((goalWeek != thisWeek )){
+            SharedPreferences.Editor preferencesEdit =preferences.edit().putLong("goalWeek",thisWeek);
+            preferencesEdit.apply();
+            //resets weekly tasks to 0 (for new week)
+            SharedPreferences.Editor preferencesEdit2 =preferences.edit().putLong("weekTasks",0);
+            preferencesEdit2.apply();
+        }
+
+
+
         notificationManager = NotificationManagerCompat.from(this);
 
         toolbar = findViewById(R.id.toolbar);

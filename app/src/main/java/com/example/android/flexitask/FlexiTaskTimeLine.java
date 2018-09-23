@@ -310,6 +310,14 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 flexiCount++;
                 editor.putInt("flexiCount",flexiCount);
                 editor.apply();
+
+                long weeklygoalCount = preferences.getLong("weekTasks", 0);
+                SharedPreferences.Editor editor2 = preferences.edit();
+                weeklygoalCount++;
+                editor2.putLong("weekTasks",weeklygoalCount);
+                editor2.apply();
+
+
                 cursorc.close();
                 timeLineListView.setItemChecked(lastClickedPostion, false);
                 resetUI();
