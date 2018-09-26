@@ -100,9 +100,14 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         if (!(label.equals("All"))){
             labelSQL = "AND label = " + "'"+ label+"'";
+            //show delete icon
+            //delete icon open up dialog asking if you're sure you want to delete label
+            //deletes label from preferences, removes label field from tasks in table
+            //changes labelSQL to "" and reloads loader
         }
         else{
             labelSQL = "";
+            //hide delete icon
         }
 
 
@@ -445,8 +450,26 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 resetUI();
                 deleteAllTasks();
                 return true;
+            case R.id.deleteLabel:
+                deleteLabel();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteLabel(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("label","All");
+        labelSQL = "";
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        db.execSQL("DELETE FROM " + taskContract.TaskEntry.LABEL_TABLE_NAME
+                + " WHERE " + taskContract.TaskEntry.COLUMN_LABEL_NAME + "= '" + label + "'");
+
+        db.close();
+        resetUI();
+
     }
 
 

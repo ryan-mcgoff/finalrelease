@@ -41,14 +41,20 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         //get goal value and week completed tasks value
         TextView goalDisplay = findViewById(R.id.goalDisplayLabel);
         long weekTasks = preferences.getLong("weekTasks",0);
-        long goal = preferences.getInt("goal",0);
+        long goal = preferences.getInt("goal",5);
 
         String goalDisplayMessage = String.valueOf(weekTasks) + "/" + String.valueOf(goal) + " Tasks";
 
-        int percentage = (int) ((weekTasks*100/goal));
+        int percentage;
 
-        totalCount.setText(String.valueOf(percentage));
+        if(goal!=0) {
+            percentage = (int) ((weekTasks * 100 / goal));
+        }
+        else{
+            percentage = 0;
+        }
 
+        totalCount.setText(String.valueOf(totalCount));
 
         if(percentage>100){
             waveLoadingView.setProgressValue(100);
@@ -59,8 +65,6 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         }
 
         goalDisplay.setText(goalDisplayMessage);
-
-
     }
 
     public void resetLabel(){

@@ -288,18 +288,16 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                     // get the values from the Cursor for the given column index
                     int mNumberOfRecurringDays = cursorc.getInt(RecurringColumnIndex);
                     long mDateLastCompleted = cursorc.getLong(lastCompletedColumnIndex);
-                    long mtitle = cursorc.getLong(titleColumnIndex);
 
                     long mDueDate = mDateLastCompleted + (86400000L * mNumberOfRecurringDays);
 
                     ContentValues cv = new ContentValues();
-                    cv.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, mtitle);
+                    cv.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, title);
                     cv.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, String.valueOf(todayDate));
                     cv.put(taskContract.TaskEntry.COLUMN_DATE,String.valueOf(mDueDate));
 
                     getContext().getContentResolver().update(currentTaskUri,cv,null,null);
                     getContext().getContentResolver().notifyChange(currentTaskUri,null);
-
                 }
 
                 mTaskCursorAdaptor.notifyDataSetChanged();

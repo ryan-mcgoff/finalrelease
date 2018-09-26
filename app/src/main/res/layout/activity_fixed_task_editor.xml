@@ -5,6 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
+    android:fitsSystemWindows = "true"
     android:layout_width="match_parent">
 
 
@@ -277,10 +278,19 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="Set Reminder"
+                android:contentDescription="Reminder"
                 android:onClick="openDialog"
                 android:focusable="true"
                 android:padding="8dp">
+
+                <View
+                    android:id="@+id/fadeBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layerType="hardware"
+                    android:alpha="0"
+                    android:visibility="gone"
+                    android:background="@android:color/black"/>
 
                 <ImageView
                     android:id="@+id/reminderImage"
@@ -289,6 +299,7 @@
                     android:layout_margin="16dp"
                     android:src="@drawable/ic_access_alarm_black_24dp" />
 
+
                 <TextView
                     android:id="@+id/reminderMessage"
                     android:layout_width="wrap_content"
@@ -296,8 +307,9 @@
                     android:layout_toEndOf="@id/reminderImage"
                     android:layout_toRightOf="@+id/reminderImage"
                     android:padding="4dp"
-                    android:text="Set Reminder"
+                    android:text="Reminder"
                     android:textStyle="bold" />
+
 
                 <TextView
                     android:id="@+id/reminderDisplayLabel"
@@ -307,7 +319,12 @@
                     android:layout_alignStart="@+id/reminderMessage"
                     android:layout_below="@+id/reminderMessage"
                     android:padding="4dp"
-                    android:text="reminder message" />
+                    android:text="set reminder" />
+                <Switch
+                    android:id="@+id/reminderSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/reminderDisplayLabel"/>
             </RelativeLayout>
 
         </LinearLayout>

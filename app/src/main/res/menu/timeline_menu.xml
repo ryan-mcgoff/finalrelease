@@ -7,4 +7,9 @@
         android:title="Delete All"
         app:showAsAction="never" />
 
+    <item
+        android:title="Delete Label"
+        android:id="@+id/deleteLabel"
+        android:src="@drawable/ic_delete_white_24dp"/>
+
 </menu>

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,11 +30,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -139,6 +142,12 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
 
     private int mID;
 
+    private boolean reminderSwitchState;
+
+    private Switch reminderSwitch;
+    private TextView reminderLabel;
+
+
 
     /**
      * Boolean flag that keeps track of whether the Task has been edited (true) or not (false)
@@ -157,6 +166,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
 
         public void afterTextChanged(Editable s) {
             //do nothing
+
         }
     };
 
@@ -181,7 +191,13 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         calendar = Calendar.getInstance();
 
 
+
+
         setContentView(R.layout.activity_fixed_task_editor);
+
+        reminderLabel = (TextView) findViewById(R.id.reminderDisplayLabel);
+
+
 
 
         appbar = findViewById(R.id.appbar);
@@ -445,6 +461,31 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
 
         });
 
+        // check if reminder stuff there, set button checked if there
+        //when setting alamr, cancel alarm, check state of button. If false set reminder stuff to ""
+        // when button clicked greyout label
+
+        reminderSwitch = findViewById(R.id.reminderSwitch);
+        reminderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                View greyOut = findViewById(R.id.fadeBackground);
+                if(isChecked){
+                    reminderLabel.setTextColor(Color.DKGRAY);
+                    //ungrey out
+                    greyOut.setVisibility(View.GONE);
+                    reminderSwitchState = true;
+                }
+                else{
+                    //grey out
+                    reminderLabel.setTextColor(Color.LTGRAY);
+                    greyOut.setVisibility(View.VISIBLE);
+
+                    reminderSwitchState = false;
+                }
+            }
+        });
+
 
         //set touchlisteners on all input fields to listen for any chnages to data
         mtitleEditText.setOnTouchListener(mTouchListener);
@@ -461,6 +502,11 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
      * Helper method to insertTask into the database
      */
     public void insertTask(View view) {
+
+        if(!reminderSwitchState){
+            mReminderUnitBefore = "";
+            mReminderUnit = "";
+        }
 
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
@@ -736,9 +782,10 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 String chosenDateAsString = DateFormat.getDateInstance().format(c.getTime());
                 TextView dateLabel = (TextView) findViewById(R.id.dateDiplayLabel);
                 dateLabel.setText(chosenDateAsString);
-                TextView reminderLabel = (TextView) findViewById(R.id.reminderDisplayLabel);
+
                 if(!(mReminderUnitBefore.isEmpty()&&mReminderUnit.isEmpty())){
                     reminderLabel.setText(mReminderUnit+" "+ mReminderUnitBefore);
+                    reminderSwitch.setChecked(true);
 
                 }
 
@@ -775,57 +822,68 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
 
     /**Called when set reminder layout is clicked*/
     public void openDialog(View view){
-        TaskReminderDialog taskReminderDialog = new TaskReminderDialog();
-        Bundle args = new Bundle();
-        args.putString("units",mReminderUnit);
-        args.putString("unitsBefore",mReminderUnitBefore);
-        taskReminderDialog.setArguments(args);
-        taskReminderDialog.show(getSupportFragmentManager(),"newTaskLabelDialog");
+        if(reminderSwitchState) {
+            TaskReminderDialog taskReminderDialog = new TaskReminderDialog();
+            Bundle args = new Bundle();
+            args.putString("units", mReminderUnit);
+            args.putString("unitsBefore", mReminderUnitBefore);
+            taskReminderDialog.setArguments(args);
+            taskReminderDialog.show(getSupportFragmentManager(), "newTaskLabelDialog");
+        }
     }
+
 
 
     private void setReminderAlarm(int taskID, String taskTitle, long Duedate){
 
-        Log.e("alarm: ", "Alarm NOT schedule for today" + mReminderUnitBefore);
 
-        //Makes sure there is a valid reminder date
-        if (!(mReminderUnitBefore.equals("") || mReminderUnit.equals(""))){
-
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            Intent intent = new Intent(this,AlertReceiverReminder.class);
-            intent.putExtra("title", taskTitle);
-            intent.putExtra("date", Duedate);
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this,taskID,intent,0);
-
-            //get time before for new due date item
-
-
-            int reminderValue = 3000;
-
-            Calendar reminderCalander = Calendar.getInstance();
-            reminderCalander.setTimeInMillis(calendar.getTimeInMillis());
-
-            switch (mReminderUnitBefore){
-                case("Minutes before"):
-                    reminderCalander.add(Calendar.MINUTE,-Integer.valueOf(mReminderUnit));
-                    break;
-                case("Hours before"):
-                    reminderCalander.add(Calendar.HOUR_OF_DAY,-Integer.valueOf(mReminderUnit));
-                    break;
-                case("Days before"):
-                    reminderCalander.add(Calendar.DAY_OF_YEAR,-Integer.valueOf(mReminderUnit));
-                    break;
-
-                case("Weeks before"):
-                    reminderCalander.add(Calendar.WEEK_OF_YEAR,-Integer.valueOf(mReminderUnit));
-                    break;
-            }
-
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,(reminderCalander.getTimeInMillis()-reminderValue),pendingIntent);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        //cancel alarm
+        Intent i = new Intent(this, AlertReceiverReminder.class);
+        // Extras aren't used to find the PendingIntent
+        PendingIntent pi = PendingIntent.getBroadcast(this, taskID, i,
+                PendingIntent.FLAG_NO_CREATE); // find the old PendingIntent
+        if (pi != null) {
+            // Now cancel the alarm that matches the old PendingIntent
+            alarmManager.cancel(pi);
         }
 
-    }
+        //Makes sure there is a valid reminder date
+            if (!(mReminderUnitBefore.equals("") || mReminderUnit.equals(""))) {
+
+                Intent intent = new Intent(this, AlertReceiverReminder.class);
+                intent.putExtra("title", taskTitle);
+                //intent.putExtra("date", Duedate);
+
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, taskID, intent, 0);
+
+                //get time before for new due date item
+                //delete if alarm lready exists
+
+
+                int reminderValue = 3000;
+
+                Calendar reminderCalander = Calendar.getInstance();
+                reminderCalander.setTimeInMillis(calendar.getTimeInMillis());
+
+                switch (mReminderUnitBefore) {
+                    case ("Minutes before"):
+                        reminderCalander.add(Calendar.MINUTE, -Integer.valueOf(mReminderUnit));
+                        break;
+                    case ("Hours before"):
+                        reminderCalander.add(Calendar.HOUR_OF_DAY, -Integer.valueOf(mReminderUnit));
+                        break;
+                    case ("Days before"):
+                        reminderCalander.add(Calendar.DAY_OF_YEAR, -Integer.valueOf(mReminderUnit));
+                        break;
+
+                    case ("Weeks before"):
+                        reminderCalander.add(Calendar.WEEK_OF_YEAR, -Integer.valueOf(mReminderUnit));
+                        break;
+                }
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, (reminderCalander.getTimeInMillis()), pendingIntent);
+            }
+        }
 
     @Override
     public void applyNotificationReminder(String unitsReminder, String unitsBefore) {
