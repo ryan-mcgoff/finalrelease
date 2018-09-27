@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)-->
 
-
-
 <android.support.design.widget.CoordinatorLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
+    android:fitsSystemWindows = "true"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
-
-
-
-
 
 <ScrollView
     android:layout_width="match_parent"
@@ -104,7 +98,8 @@
     <LinearLayout
         android:id="@+id/viewBb"
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:focusable="true"
         android:layout_height="wrap_content">
 
         <RelativeLayout
@@ -139,6 +134,44 @@
                 android:layout_below="@+id/dueDateTextLabel"
                 android:padding="4dp"
                 android:text="date" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="time selector"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/labelImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_label_outline_black_24dp" />
+
+            <TextView
+                android:id="@+id/labelSpinnerLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/labelImage"
+                android:layout_toRightOf="@+id/labelImage"
+                android:padding="4dp"
+                android:text="Label"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/labelSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/labelSpinnerLabel"
+                android:layout_toEndOf="@+id/labelImage"
+                android:layout_toRightOf="@+id/labelImage"
+                android:contentDescription="click to select a label for the task">
+
+            </Spinner>
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -208,76 +241,7 @@
 
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="time selector"
-            android:padding="8dp">
 
-            <ImageView
-                android:id="@+id/labelImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_label_outline_black_24dp" />
-
-            <TextView
-                android:id="@+id/labelSpinnerLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/labelImage"
-                android:layout_toRightOf="@+id/labelImage"
-                android:padding="4dp"
-                android:text="Label"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/labelSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/labelSpinnerLabel"
-                android:layout_toEndOf="@+id/labelImage"
-                android:layout_toRightOf="@+id/labelImage"
-                android:contentDescription="click to select a label for the task">
-
-            </Spinner>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="Set Reminder"
-            android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/reminderImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_access_alarm_black_24dp" />
-
-            <TextView
-                android:id="@+id/reminderMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/reminderImage"
-                android:layout_toRightOf="@+id/reminderImage"
-                android:padding="4dp"
-                android:text="Set Reminder"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/reminderDisplayLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/reminderMessage"
-                android:layout_alignStart="@+id/reminderMessage"
-                android:layout_below="@+id/reminderMessage"
-                android:padding="4dp"
-                android:text="reminder message" />
-        </RelativeLayout>
 
 
     </LinearLayout>

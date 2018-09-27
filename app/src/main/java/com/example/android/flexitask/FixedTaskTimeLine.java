@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -440,6 +441,11 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.timeline_menu, menu);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        label = preferences.getString("label","All");
+        if(label.equals("All")) {
+            menu.removeItem(menu.findItem(R.id.deleteLabel).getItemId());
+        }
     }
 
     @Override
@@ -469,7 +475,17 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         db.close();
         resetUI();
+        notifyMainAcitivty();
 
+    }
+
+
+    private void notifyMainAcitivty() {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent("labeldelete");
+        // You can also include some extra data.
+        intent.putExtra("labelToDelete", label);
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
     }
 
 

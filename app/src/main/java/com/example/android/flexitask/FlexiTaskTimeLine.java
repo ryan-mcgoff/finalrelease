@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.ActionBarContainer;
 import android.support.v7.widget.Toolbar;
@@ -107,10 +108,11 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         //get label filter selected from the navigation bar
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        label = preferences.getString("label",null);
+        label = preferences.getString("label","All");
 
         if (!(label.equals("All"))){
             labelSQL = "AND label = " + "'"+ label+"'";
+
         }
         else{
             labelSQL = "";
@@ -432,6 +434,11 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.timeline_menu, menu);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        label = preferences.getString("label","All");
+        if(label.equals("All")) {
+            menu.removeItem(menu.findItem(R.id.deleteLabel).getItemId());
+        }
     }
 
     @Override
@@ -443,8 +450,36 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 mFabFlexi.setVisibility(View.VISIBLE);
                 deleteAllTasks();
                 return true;
+            case R.id.deleteLabel:
+                deleteLabel();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteLabel(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("label","All");
+        labelSQL = "";
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        db.execSQL("DELETE FROM " + taskContract.TaskEntry.LABEL_TABLE_NAME
+                + " WHERE " + taskContract.TaskEntry.COLUMN_LABEL_NAME + "= '" + label + "'");
+
+        db.close();
+        resetUI();
+        notifyMainAcitivty();
+
+    }
+
+
+    private void notifyMainAcitivty() {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent("labeldelete");
+        // You can also include some extra data.
+        intent.putExtra("labelToDelete", label);
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
     }
 
 

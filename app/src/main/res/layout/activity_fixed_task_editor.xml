@@ -94,11 +94,59 @@
 
 
         <LinearLayout
+            android:paddingTop="8dp"
             android:id="@+id/viewBb"
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:focusable="true"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="Reminder"
+                android:onClick="openDialog"
+                android:focusable="true"
+                android:padding="8dp">
+
+
+                <ImageView
+                    android:id="@+id/reminderImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/ic_access_alarm_black_24dp" />
+
+
+                <TextView
+                    android:id="@+id/reminderMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/reminderImage"
+                    android:layout_toRightOf="@+id/reminderImage"
+                    android:padding="4dp"
+                    android:textColor="#ffcccccc"
+                    android:text="Reminder"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/reminderDisplayLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/reminderMessage"
+                    android:layout_alignStart="@+id/reminderMessage"
+                    android:layout_below="@+id/reminderMessage"
+                    android:padding="4dp"
+                    android:textColor="#ffcccccc"
+                    android:text="set reminder" />
+                <Switch
+                    android:id="@+id/reminderSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/dateButton"
@@ -175,6 +223,43 @@
                 android:text="time" />
         </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:contentDescription="label selector"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/labelImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/ic_label_outline_black_24dp" />
+
+                <TextView
+                    android:id="@+id/labelSpinnerLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/labelImage"
+                    android:layout_toRightOf="@+id/labelImage"
+                    android:padding="4dp"
+                    android:text="Label"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/labelSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/labelSpinnerLabel"
+                    android:layout_toEndOf="@+id/labelImage"
+                    android:layout_toRightOf="@+id/labelImage"
+                    android:contentDescription="click to select a label for the task">
+
+                </Spinner>
+
+            </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -217,11 +302,6 @@
                 android:padding="16dp"
                 android:visibility="gone">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Every" />
-
                 <EditText
                     android:id="@+id/customRecurringText"
                     android:layout_width="wrap_content"
@@ -238,94 +318,9 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:contentDescription="label selector"
-            android:padding="8dp">
-
-        <ImageView
-            android:id="@+id/labelImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_label_outline_black_24dp" />
-
-        <TextView
-            android:id="@+id/labelSpinnerLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/labelImage"
-            android:layout_toRightOf="@+id/labelImage"
-            android:padding="4dp"
-            android:text="Label"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/labelSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/labelSpinnerLabel"
-            android:layout_toEndOf="@+id/labelImage"
-            android:layout_toRightOf="@+id/labelImage"
-            android:contentDescription="click to select a label for the task">
-
-        </Spinner>
-
-        </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="Reminder"
-                android:onClick="openDialog"
-                android:focusable="true"
-                android:padding="8dp">
-
-                <View
-                    android:id="@+id/fadeBackground"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layerType="hardware"
-                    android:alpha="0"
-                    android:visibility="gone"
-                    android:background="@android:color/black"/>
-
-                <ImageView
-                    android:id="@+id/reminderImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:src="@drawable/ic_access_alarm_black_24dp" />
 
 
-                <TextView
-                    android:id="@+id/reminderMessage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/reminderImage"
-                    android:layout_toRightOf="@+id/reminderImage"
-                    android:padding="4dp"
-                    android:text="Reminder"
-                    android:textStyle="bold" />
 
-
-                <TextView
-                    android:id="@+id/reminderDisplayLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/reminderMessage"
-                    android:layout_alignStart="@+id/reminderMessage"
-                    android:layout_below="@+id/reminderMessage"
-                    android:padding="4dp"
-                    android:text="set reminder" />
-                <Switch
-                    android:id="@+id/reminderSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/reminderDisplayLabel"/>
-            </RelativeLayout>
 
         </LinearLayout>
 

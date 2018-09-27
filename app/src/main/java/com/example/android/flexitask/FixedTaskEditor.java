@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -469,18 +470,22 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         reminderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                View greyOut = findViewById(R.id.fadeBackground);
+                TextView reminderDisplay = findViewById(R.id.reminderDisplayLabel);
+                ImageView reminderImage = findViewById(R.id.reminderImage);
+                TextView reminderMessage = findViewById(R.id.reminderMessage);
                 if(isChecked){
                     reminderLabel.setTextColor(Color.DKGRAY);
-                    //ungrey out
-                    greyOut.setVisibility(View.GONE);
+                    reminderDisplay.setTextColor(Color.DKGRAY);
+                    reminderMessage.setTextColor(Color.DKGRAY);
+                    reminderImage.setColorFilter(Color.DKGRAY);
                     reminderSwitchState = true;
                 }
                 else{
                     //grey out
                     reminderLabel.setTextColor(Color.LTGRAY);
-                    greyOut.setVisibility(View.VISIBLE);
-
+                    reminderDisplay.setTextColor(Color.LTGRAY);
+                    reminderMessage.setTextColor(Color.LTGRAY);
+                    reminderImage.setColorFilter(Color.LTGRAY);
                     reminderSwitchState = false;
                 }
             }
