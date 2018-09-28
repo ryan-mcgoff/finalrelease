@@ -26,9 +26,10 @@
             android:textSize="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.106"
+            app:layout_constraintHorizontal_bias="0.154"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintVertical_bias="0.35" />
 
         <Button
             android:layout_width="72dp"
@@ -38,15 +39,15 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="@null"
-            android:text="edit goal"
             android:onClick="openDialog"
+            android:text="edit goal"
             android:textColor="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.081"
+            app:layout_constraintHorizontal_bias="0.118"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.846" />
+            app:layout_constraintVertical_bias="0.805" />
 
 
         <me.itangqi.waveloadingview.WaveLoadingView
@@ -55,15 +56,15 @@
             android:layout_height="100dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="124dp"
+            android:layout_marginTop="80dp"
             app:layout_constraintEnd_toEndOf="parent"
 
 
             app:layout_constraintHorizontal_bias="0.97"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
 
 
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:wlv_borderWidth="3dp"
             app:wlv_round_rectangle="true"
             app:wlv_shapeType="circle"

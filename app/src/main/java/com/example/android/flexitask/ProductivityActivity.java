@@ -54,7 +54,7 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
             percentage = 0;
         }
 
-        totalCount.setText(String.valueOf(totalCount));
+        totalCount.setText(String.valueOf(flexiCountInt+fixedCountInt));
 
         if(percentage>100){
             waveLoadingView.setProgressValue(100);

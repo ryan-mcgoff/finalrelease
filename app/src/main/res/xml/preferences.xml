@@ -13,10 +13,16 @@
         android:defaultValue="@string/color_default_value"
     />
 
+    <SwitchPreference
+        android:key="daily"
+        android:title="Daily notification"
+        android:defaultValue="true"
+        android:contentDescription="Turn off daily notifications" />
+
 
     <com.example.android.flexitask.TimePreferenceObject
         android:key="time"
-        android:title="Daily Notification"
+        android:title="Set Daily Notification"
         android:defaultValue="8:00"
         android:contentDescription="Time Picker for notifications"
         android:summary="Select when you want to recieve a daily summary"/>

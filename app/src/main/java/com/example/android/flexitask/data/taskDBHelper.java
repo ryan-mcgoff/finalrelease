@@ -57,6 +57,7 @@ public class taskDBHelper extends SQLiteOpenHelper {
             + taskContract.TaskEntry.COLUMN_HISTORY + " TEXT, "
             + taskContract.TaskEntry.COLUMN_TYPE_TASK + " INTEGER NOT NULL, "
             + taskContract.TaskEntry.COLUMN_STATUS + " INTEGER NOT NULL)";
+    
 
 
     /**
@@ -93,6 +94,7 @@ public class taskDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS "+ taskContract.TaskEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+taskContract.TaskEntry.LABEL_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+taskContract.TaskEntry.History_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+taskContract.TaskEntry.IRREGULAR_TABLE_NAME);
         onCreate(db);
     }
 }

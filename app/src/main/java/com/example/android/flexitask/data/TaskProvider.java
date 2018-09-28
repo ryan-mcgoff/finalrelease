@@ -35,6 +35,12 @@ public class TaskProvider extends ContentProvider {
     /** URI matcher code for the content URI for history table */
     private static final int HISTORY = 102;
 
+    /** URI matcher code for the content URI for irregular table */
+    private static final int IRREGULAR = 103;
+
+    /** URI matcher code for the content URI for irregular task */
+    private static final int IRREGULAR_ID = 104;
+
 
     /** UriMatcher object to match a content URI to a corresponding code */
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -52,6 +58,8 @@ public class TaskProvider extends ContentProvider {
         sUriMatcher.addURI(taskContract.CONTENT_AUTHORITY,taskContract.PATH_Tasks,TASKS);
         sUriMatcher.addURI(taskContract.CONTENT_AUTHORITY,taskContract.PATH_Tasks +"/#",TASK_ID);
         sUriMatcher.addURI(taskContract.CONTENT_AUTHORITY,taskContract.PATH_HISTORY,HISTORY);
+        sUriMatcher.addURI(taskContract.CONTENT_AUTHORITY,taskContract.PATH_IRREGULAR,IRREGULAR);
+        sUriMatcher.addURI(taskContract.CONTENT_AUTHORITY,taskContract.PATH_IRREGULAR +"/#",IRREGULAR_ID);
 
     }
 
@@ -109,6 +117,28 @@ public class TaskProvider extends ContentProvider {
 
                 break;
 
+            case IRREGULAR:
+
+                cursor = database.query(taskContract.TaskEntry.LABEL_TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+
+                break;
+
+            case IRREGULAR_ID:
+
+                //for every "?" in the selection string there needs to be an argument in the
+                //selection array
+                selection = taskContract.TaskEntry._ID + "=?";
+
+                //Extracts the row number ID from the end of the URI (1 argument)
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+
+                //returns a cursor holding information for the given rowID
+                cursor = database.query(taskContract.TaskEntry.IRREGULAR_TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+
+                break;
+
             default:
 
                 throw new IllegalArgumentException("Query failed, URI not valid " + uri);
@@ -136,6 +166,11 @@ public class TaskProvider extends ContentProvider {
                 return taskContract.TaskEntry.CONTENT_ITEM_TYPE;
             case HISTORY:
                 return taskContract.TaskEntry.CONTENT_HISTORY_LIST_TYPE;
+            case IRREGULAR:
+                return taskContract.TaskEntry.CONTENT_IRREGULAR_LIST_TYPE;
+            case IRREGULAR_ID:
+                return taskContract.TaskEntry.CONTENT_IRREGULAR_ITEM_TYPE;
+
             default:
                 throw new IllegalStateException("Invalid URI");
         }
@@ -166,6 +201,8 @@ public class TaskProvider extends ContentProvider {
                 return insertTask(uri,values);
             case HISTORY:
                 return insertHistory(uri,values);
+            case IRREGULAR:
+                return insertIrregular(uri,values);
             default:
                 throw new IllegalArgumentException("Query failed, URI wasn't for the whole table");
 
@@ -201,6 +238,38 @@ public class TaskProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri,id);
 
     }
+
+
+
+    /**
+     * Helper insert Method for {@link TaskProvider#insert(Uri, ContentValues)}
+     * creates a writeable version of the databae and inserts the contentValues into the irregular task table
+     *
+     * @param uri so the app can notify the corresponding cursor observer of the recent changes
+     * @param values containe both data for the task and the column names to insert those values into
+     * @return URI for the newly inserted row
+     *
+     */
+    private Uri insertIrregular(Uri uri, ContentValues values){
+        // Get writeable database
+        SQLiteDatabase database = mdbHelper.getWritableDatabase();
+        // Insert the new Task with the provided content values
+        long id = database.insert(taskContract.TaskEntry.IRREGULAR_TABLE_NAME, null, values);
+
+        // If the ID is -1, then the insertion didn't work. Log an error and return null to exit.
+        if (id == -1) {
+            Log.e(LOG_TAG, "row " + uri +" failed to insert");
+            return null;
+        }
+        // Notify all listeners that the data has changed
+        getContext().getContentResolver().notifyChange(uri, null);
+
+
+        //returns the new URI
+        return ContentUris.withAppendedId(uri,id);
+
+    }
+
 
 
     /**
@@ -254,6 +323,22 @@ public class TaskProvider extends ContentProvider {
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 numberOfdeletedRows = database.delete(taskContract.TaskEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+
+            case IRREGULAR:
+                // Delete all rows that match the selection and selection args
+                numberOfdeletedRows= database.delete(taskContract.TaskEntry.IRREGULAR_TABLE_NAME, selection, selectionArgs);
+
+                break;
+
+            case IRREGULAR_ID:
+
+                // Delete a single row given by the ID in the URI
+                selection = taskContract.TaskEntry._ID + "=?";
+                //gets the ID of the URI
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                numberOfdeletedRows = database.delete(taskContract.TaskEntry.IRREGULAR_TABLE_NAME, selection, selectionArgs);
+
+                break;
             default:
                 throw new IllegalArgumentException("URI invalid for deletion " + uri);
         }
@@ -282,6 +367,14 @@ public class TaskProvider extends ContentProvider {
                 selection = taskContract.TaskEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 return updateTask(uri, values, selection, selectionArgs);
+
+            case IRREGULAR:
+                return updateIrregular(uri, values, selection, selectionArgs);
+            case IRREGULAR_ID:
+                selection = taskContract.TaskEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateIrregular(uri, values, selection, selectionArgs);
+
             default:
                 throw new IllegalArgumentException("Update not available for " + uri);
         }
@@ -306,6 +399,33 @@ public class TaskProvider extends ContentProvider {
         SQLiteDatabase database = mdbHelper.getWritableDatabase();
 
         int numberUpdatedRows = database.update(taskContract.TaskEntry.TABLE_NAME, values, selection, selectionArgs);
+        //If a row is updated, notify the content observor
+        if(numberUpdatedRows!=0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        //return number of rows updated
+        return numberUpdatedRows;
+
+    }
+
+    /**
+     * Helper update Method for {@link TaskProvider#update(Uri, ContentValues, String, String[])}
+     * creates a writeable version of the databae and updates the given contentValues for the row
+     * provides in the selectionARGS array
+     *
+     * @param uri so the app can notify the corresponding cursor observer of the recent changes
+     * @param selection the column you are selecting (ID)
+     * @param selectionArgs the value you are selecting by (ie: ID = 3)
+     * @param values set of column_name/value pairs to update in the database
+     * @return int the number of rows updated
+     *
+     */
+    private int updateIrregular(Uri uri, ContentValues values, String selection, String[] selectionArgs){
+
+        //Database to write to
+        SQLiteDatabase database = mdbHelper.getWritableDatabase();
+
+        int numberUpdatedRows = database.update(taskContract.TaskEntry.IRREGULAR_TABLE_NAME, values, selection, selectionArgs);
         //If a row is updated, notify the content observor
         if(numberUpdatedRows!=0){
             getContext().getContentResolver().notifyChange(uri, null);

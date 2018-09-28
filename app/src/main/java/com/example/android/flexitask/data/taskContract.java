@@ -26,6 +26,7 @@ public final class taskContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_Tasks = "tasks";
     public static final String PATH_HISTORY = "history";
+    public static final String PATH_IRREGULAR = "irregular";
 
 
 
@@ -35,16 +36,20 @@ public final class taskContract {
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_Tasks);
         public static final Uri HISTORY_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_HISTORY);
+        public static final Uri IRREGULAR_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_IRREGULAR);
 
 
         /** Name of database table for the tasks */
         public final static String TABLE_NAME = "tasks";
         public final static String LABEL_TABLE_NAME = "labels";
         public final static String History_TABLE_NAME = "history";
+        public final static String IRREGULAR_TABLE_NAME = "irregular";
 
         public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_Tasks;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_Tasks;
         public static final String CONTENT_HISTORY_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_HISTORY;
+        public static final String CONTENT_IRREGULAR_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_HISTORY;
+        public static final String CONTENT_IRREGULAR_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_Tasks;
         /**
          * Unique ID number for each task
          *

@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -103,12 +104,49 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = (DrawerLayout) findViewById(R.id.nav_draw);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,
-                R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+                R.string.navigation_drawer_open,R.string.navigation_drawer_close){
 
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+
+
+
+                super.onDrawerClosed(view);
+
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                int flexiCountInt = preferences.getInt("flexiCount", 0);
+                int fixedCountInt = preferences.getInt("fixedCount", 0);
+                long weekTasks = preferences.getLong("weekTasks",0);
+                long goal = preferences.getInt("goal",5);
+
+                TextView flipFlexi = findViewById(R.id.flipFlexi);
+                TextView flipFixed = findViewById(R.id.flipFixed);
+                TextView flipWeekly = findViewById(R.id.flipWeekly);
+                String flipFixedMessage = "Life time FixedTasks " + String.valueOf(fixedCountInt);
+                String flipFlexiMessage = "Life time FlexiTasks " + String.valueOf(flexiCountInt);
+                String flipWeeklyMessage = "Weekly goal " + weekTasks +"/"+ goal;
+
+                if(flipFixed!=null){
+                    flipFixed.setText(flipFixedMessage);
+                }
+                if(flipFlexi!=null){
+                    flipFlexi.setText(flipFlexiMessage);
+                }
+                if(flipWeekly!=null){
+                    flipWeekly.setText(flipWeeklyMessage);
+                }
+            }
+        };
         actionBarDrawerToggle.setDrawerSlideAnimationEnabled(false);
 
+        // Set the drawer toggle as the DrawerListener
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
-
 
         setAlarm();
 
