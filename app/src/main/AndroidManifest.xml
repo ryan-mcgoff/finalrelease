@@ -47,7 +47,7 @@
         </receiver>
 
         <!-- Will not be called unless the application explicitly enables it -->
-        <receiver android:name="com.example.android.flexitask.DeviceBootReciever"
+        <receiver android:name="com.example.android.flexitask.DeviceBootReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

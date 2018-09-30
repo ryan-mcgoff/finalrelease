@@ -334,6 +334,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
+        android:tint="@color/whiteC"
         android:focusable="true"
         android:onClick="insertTask"
         android:src="@drawable/ic_done_black_24dp"

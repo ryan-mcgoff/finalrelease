@@ -25,32 +25,39 @@ import java.util.Calendar;
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
  * This class is initialised by the Android system when an alarm is fired, the class
  * uses {@link NotificationHelper} to create a notification to broadcast to the user's device.
+ * It is used to create a daily summary of due tasks notifications
  */
 public class AlertReceiver extends BroadcastReceiver {
 
     private taskDBHelper mDbHelper;
 
-
+    /**
+     * This method is called when the class receives a message from the Android system (when a timed
+     * alarm is fired). The method finds tasks that will be due over the next 7 days and uses the notification
+     * helper class to construct and then display that notification.
+     *
+     * @param context app context
+     * @param intent intent passed to pending intent when creating alarm
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        //called when alarm is fired, do this....
-        //channel 1 ignored on lower API <26
-
+        /*checks shared preferences to check if the user has turned off the daily notification
+        in the settings */
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean dailySwitch = preferences.getBoolean("daily", false);
 
         if(dailySwitch) {
+
             mDbHelper = new taskDBHelper(context);
-            //Database Helper
             SQLiteDatabase db = mDbHelper.getWritableDatabase();
             //Array list to store task titles;
             ArrayList<String> notificationMessage = new ArrayList<String>();
-            //today's date
+
             long today = Calendar.getInstance().getTimeInMillis();
             long m7DaysAhead = today + 604800000;
 
-            //Cursors through the database to retrieve a list of over tasks and tasks due in the next 7 days
+            //Cursors through the database to retrieve a list tasks due/overdue in the next 7 days
             Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.TABLE_NAME +
                     " WHERE " + String.valueOf(m7DaysAhead) + " > " + taskContract.TaskEntry.COLUMN_DATE + " OR " +
                     String.valueOf(today) + " > " + taskContract.TaskEntry.COLUMN_DATE, null);
@@ -66,13 +73,11 @@ public class AlertReceiver extends BroadcastReceiver {
             mNotificationHelper.getNotificationManager().notify(1, nb.build());
         }
 
-        //Creates new alarm for daily notification for tomorrow based on the user's notification preferences
+
+        //sets an alarm for the following day that will call this class and broadcast the daily notification again
         Calendar c = Calendar.getInstance();
         String alarmS = PreferenceManager.getDefaultSharedPreferences(context).getString("time", "08:00");
 
-        String[] timeArray = alarmS.split(":");
-        int hour = (Integer.parseInt(timeArray[0]));
-        int min = (Integer.parseInt(timeArray[1]));
         c.add(Calendar.DAY_OF_YEAR, 1); //add day
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

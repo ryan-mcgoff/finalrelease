@@ -1,6 +1,7 @@
 package com.example.android.flexitask;
 
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -97,7 +98,7 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         //get label filter selected from the navigation bar
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        label = preferences.getString("label",null);
+        label = preferences.getString("label","All");
 
         if (!(label.equals("All"))){
             labelSQL = "AND label = " + "'"+ label+"'";
@@ -244,10 +245,15 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 if (cursorc.moveToFirst()) {
                     int recurringColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
                     int dateColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_DATE);
+                    int  reminderUnitIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT);
+                    int reminderBeforeIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT_BEFORE);
                     int titleColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_TASK_TITLE);
+
                     String mtitle = cursorc.getString(titleColumnIndex);
                     int recurringNumber = cursorc.getInt(recurringColumnIndex);
                     long dateLong = cursorc.getLong(dateColumnIndex);
+                    String mReminderBefore = cursorc.getString(reminderBeforeIndex);
+                    String mReminderUnit = cursorc.getString(reminderUnitIndex);
 
                     long todayDate = Calendar.getInstance().getTimeInMillis();
 
@@ -270,15 +276,9 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
                         Calendar c = Calendar.getInstance();
 
-                        long historyDate = c.getTimeInMillis();
-                        // getlast complted + recurring days
-                        int lastCompletedColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_LAST_COMPLETED);
-                        int RecurringColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
-
                         getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
                         getActivity().getContentResolver().delete(currentTaskUri,null,null);
-
-
+                        cancelAlarm();
 
                     }
                     //if there is a recurring period for that task, and the task isn't
@@ -297,6 +297,8 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                         getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
 
 
+                        setReminder(title,dateLong,mReminderUnit,mReminderBefore);
+
                     } else {
                         // if task is overdue, then find the next due date for the task that is bigger than today's date
                         while (todayDate > dateLong) {
@@ -308,6 +310,7 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                             getActivity().getContentResolver().update(currentTaskUri,cv,null,null);
                             getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
                         }
+                        setReminder(title,dateLong,mReminderUnit,mReminderBefore);
                     }
                 }
 
@@ -330,9 +333,9 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 timeLineListView.setItemChecked(lastClickedPostion, false);
                 resetUI();
 
-
             }
         });
+
 
 
         /* DELETE BUTTON -
@@ -344,6 +347,7 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
                 getActivity().getContentResolver().delete(currentTaskUri, null, null);
                 resetUI();
+                cancelAlarm();
 
             }
         });
@@ -357,6 +361,57 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         setHasOptionsMenu(true);
 
         return rootView;
+
+    }
+
+    private void setReminder(String taskTitle, long date, String reminderUnit, String reminderBefore){
+
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
+
+        cancelAlarm();
+
+        if (!(reminderBefore.equals("") || reminderUnit.equals(""))) {
+
+            Intent intent = new Intent(getContext(), AlertReceiverReminder.class);
+            intent.putExtra("title", taskTitle);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) item_iD, intent, 0);
+
+
+            Calendar reminderCalander = Calendar.getInstance();
+            reminderCalander.setTimeInMillis(date);
+
+            switch (reminderBefore) {
+                case ("Minutes before"):
+                    reminderCalander.add(Calendar.MINUTE, -Integer.valueOf(reminderUnit));
+                    break;
+                case ("Hours before"):
+                    reminderCalander.add(Calendar.HOUR_OF_DAY, -Integer.valueOf(reminderUnit));
+                    break;
+                case ("Days before"):
+                    reminderCalander.add(Calendar.DAY_OF_YEAR, -Integer.valueOf(reminderUnit));
+                    break;
+
+                case ("Weeks before"):
+                    reminderCalander.add(Calendar.WEEK_OF_YEAR, -Integer.valueOf(reminderUnit));
+                    break;
+            }
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, (reminderCalander.getTimeInMillis()), pendingIntent);
+        }
+    }
+
+    private void cancelAlarm(){
+
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
+        //cancel alarm
+        Intent i = new Intent(getContext(), AlertReceiverReminder.class);
+        // Extras aren't used to find the PendingIntent
+        PendingIntent pi = PendingIntent.getBroadcast(getContext(), (int) item_iD, i,
+                PendingIntent.FLAG_NO_CREATE); // find the old PendingIntent
+        if (pi != null) {
+            // Now cancel the alarm that matches the old PendingIntent
+            alarmManager.cancel(pi);
+        }
 
     }
 
@@ -452,9 +507,14 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             //FOR DEBUGGING PURPOSES
-            case R.id.deleteAll:
-                resetUI();
-                deleteAllTasks();
+            case R.id.help:
+                HelpDialog bd = new HelpDialog();
+                Bundle b = new Bundle();
+                b.putString(HelpDialog.TITLE_KEY, "FixedTask help");
+                b.putString(HelpDialog.MESSAGE_KEY, getResources().getString(R.string.fixedHelpMessage));
+                bd.setArguments(b);
+                bd.show(getFragmentManager(), "help fragment");
+
                 return true;
             case R.id.deleteLabel:
                 deleteLabel();

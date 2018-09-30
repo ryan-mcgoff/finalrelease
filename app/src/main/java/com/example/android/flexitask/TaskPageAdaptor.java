@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentPagerAdapter;
  * and {@link FixedTaskTimeLine} as the fragments to switch between
  */
 public class TaskPageAdaptor extends FragmentPagerAdapter {
-
     /**
      * App Context
      */

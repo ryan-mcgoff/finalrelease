@@ -3,6 +3,7 @@ package com.example.android.flexitask;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -118,6 +119,8 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
     private  AppBarLayout appbar;
 
+    private FloatingActionButton doneFab;
+
 
     /**
      * Boolean flag that keeps track of whether the Task has been edited (true) or not (false)
@@ -182,6 +185,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
         //toolbar = findViewById(R.id.toolbar);
         appbar = findViewById(R.id.appbar);
+
 
 
         //setSupportActionBar(toolbar);
@@ -254,6 +258,16 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MILLISECOND, 0);
             mDateLastCompleted = c.getTimeInMillis();
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            mLabel = preferences.getString("label","All");
+
+            //Sets the Label spinner to the value for that row
+            for(int i =0; i<mLabelSpinner.getCount();i++){
+                if(mLabelSpinner.getItemAtPosition(i).toString().equals(mLabel) && !mLabel.equals("All")){
+                    mLabelSpinner.setSelection(i);
+                }
+            }
         } else {
 
             setTitle("Edit a task");
@@ -409,7 +423,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
             case ("DCOLOUR"):
                // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
-               doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccentD));
+                doneButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentD)));
 
                 break;
 
@@ -417,20 +431,20 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
                // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
-                doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccentP));
+                doneButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentP)));
 
                 break;
 
             case ("TCOLOUR"):
                // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
-                doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccentT));
+                doneButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentT)));
 
                 break;
             default:
                // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                doneButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
         }
     }
 

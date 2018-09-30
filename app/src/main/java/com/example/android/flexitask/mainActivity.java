@@ -44,7 +44,7 @@ import java.util.Calendar;
  * This class is the main class which acts as a container for all the fragments
  * It inflates an XML layout which contains a nav draw, it then programtically checks for when an item in this
  * nav draw is selected and switch the current fragment it is displaying with the new one.
- * The class also sets up an alarm anytime the user opens the App (this will later be done by {@link AppManager}
+ * The class also sets up an alarm anytime the user opens the App.
  */
 public class mainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,NewTaskLabelDialog.NewTaskLabelDialogListener {
 
@@ -60,6 +60,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
     private int lastItemID;
     private int labelCount =2;
     private MenuItem createNew;
+    private View header;
 
 
     @Override
@@ -98,7 +99,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         notificationManager = NotificationManagerCompat.from(this);
 
         toolbar = findViewById(R.id.toolbar);
-        colorSwitch();
+
         setSupportActionBar(toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.nav_draw);
@@ -154,7 +155,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        View header = navigationView.getHeaderView(0);
+        header = navigationView.getHeaderView(0);
 
         header.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,6 +197,8 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         subMenu.setGroupCheckable(0,true,true);
 
         navigationView.setNavigationItemSelectedListener(this);
+
+        colorSwitch();
 
 
     }
@@ -338,21 +341,26 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         switch (colourSetting) {
             case ("DCOLOUR"):
                 toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
+                header.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
+
 
                 break;
 
             case ("PCOLOUR"):
 
                 toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
+                header.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
 
                 break;
 
             case ("TCOLOUR"):
                 toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
+                header.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
 
                 break;
             default:
                 toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                header.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
     }
 
@@ -372,9 +380,6 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
             String labelToDelete = intent.getStringExtra("labelToDelete");
             displayView(R.id.nav_tasks,null);
             subMenu.removeItem(itemID);
-            Toast.makeText(getApplicationContext(),"recived",Toast.LENGTH_LONG).show();
-
-
         }
     };
 

@@ -8,6 +8,8 @@ import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -49,6 +51,9 @@ import java.util.Calendar;
 
 import com.example.android.flexitask.data.taskContract;
 import com.example.android.flexitask.data.taskDBHelper;
+import com.github.clans.fab.Label;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
@@ -64,96 +69,57 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, TaskReminderDialog.TaskReminderDialogListener{
 
-    /**Calander for date-time field*/
+    //Calender for date-time field
     private Calendar calendar;
-    /**
-     * EditText field to enter Task's title
-     */
-    private EditText mtitleEditText;
 
-    /**
-     * EditText field to Task's description
-     */
-    private EditText mDescriptionEditText;
-
-    /**
-     * EditText field to enter the custom number of recurring days
-     */
+    //EditText field to enter the custom number of recurring days
     private EditText mCustomRecurring;
 
-    /**
-     * EditText field to select how often the task
-     */
+    //EditText field to select how often the task
     private Spinner mRecurringSpinner;
 
-    /**
-     * Date
-     */
+    //Task date and time
     private long mDate;
-
-    /**
-     * time
-     */
     private String mTime;
 
-    /**
-     * Boolean to see if Custom Spinner is selected
-     */
+    //Boolean to see if Custom Spinner is selected
     private boolean isCustomSpinnerSelected;
 
-    /**
-     * Number of Recurring days
-     */
     private int mNumberOfRecurringDays = taskContract.TaskEntry.RECURRING_NEVER;
 
-    /**
-     * Text count for Task Title
-     */
+    //Text count for Task Title
     private TextView textCountTaskTitle;
 
-    /**
-     * current URI for editing an existing task
-     */
+    //current URI for editing an existing task
     private Uri uriCurrentTask;
 
-    /**
-     * mRecurringDaysEditMode
-     */
-    private int mRecurringDaysEditMode;
-
-    /*Spinner View for recurring days selection */
-    private Spinner spinner;
-
-    /*Spinner View for label selection*/
-
+    //Spinner View for label selection*/
     private Spinner mLabelSpinner;
-    /*String containing the label for that task*/
+    //String containing the label for that task
     private String mLabel;
 
+    //current date
     private int currentDay;
     private int currentMonth;
     private int currentYear;
     private int currentHour;
     private int currentMin;
 
-    private AppBarLayout appbar;
 
+    //reminder properties for alarm/notification
     private String mReminderUnit;
     private String mReminderUnitBefore;
-
     private int mID;
-
     private boolean reminderSwitchState;
-
     private Switch reminderSwitch;
     private TextView reminderLabel;
+    private long dateTime;
 
-
-
-    /**
-     * Boolean flag that keeps track of whether the Task has been edited (true) or not (false)
-     */
-    private boolean mTaskHasChanged = false;
+    //Other UI elements
+    private FloatingActionButton doneFab;
+    private AppBarLayout appbar;
+    private EditText mtitleEditText;
+    private EditText mDescriptionEditText;
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -161,13 +127,13 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            /**This sets a textCountView to the current length of the input from the editTextView*/
-            textCountTaskTitle.setText(String.valueOf(s.length()) + "/30");
+            //This sets a textCountView to the current length of the input from the editTextView
+            String text = String.valueOf(s.length()) + "/30";
+            textCountTaskTitle.setText(text);
         }
 
         public void afterTextChanged(Editable s) {
             //do nothing
-
         }
     };
 
@@ -178,51 +144,46 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
 
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-
-            mTaskHasChanged = true;
             return false;
         }
 
     };
 
+    /**
+     * {@inheritDoc}
+     * Sets up the editor activity based on if user is editing an existing task or creating a new one
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         calendar = Calendar.getInstance();
 
-
-
-
         setContentView(R.layout.activity_fixed_task_editor);
-
-        reminderLabel = (TextView) findViewById(R.id.reminderDisplayLabel);
-
-
-
-
-        appbar = findViewById(R.id.appbar);
-        colorSwitch();
-
-
-
         // Find all relevant views that we will need to read user input from
-        textCountTaskTitle = (TextView) findViewById(R.id.textCountTaskTitle);
-        mtitleEditText = (EditText) findViewById(R.id.taskTitle);
-        mRecurringSpinner = (Spinner) findViewById(R.id.recurringSpinner);
-        mDescriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
-        mCustomRecurring = (EditText) findViewById(R.id.customRecurringText);
-        spinner = (Spinner) findViewById(R.id.recurringSpinner);
+        textCountTaskTitle = findViewById(R.id.textCountTaskTitle);
+        mtitleEditText = findViewById(R.id.taskTitle);
+        mRecurringSpinner = findViewById(R.id.recurringSpinner);
+        mDescriptionEditText = findViewById(R.id.descriptionEditText);
+        mCustomRecurring = findViewById(R.id.customRecurringText);
+        reminderLabel = findViewById(R.id.reminderDisplayLabel);
+        doneFab = findViewById(R.id.doneFab);
+        appbar = findViewById(R.id.appbar);
+        RelativeLayout dateButton = findViewById(R.id.dateButton);
+        RelativeLayout timeButton = findViewById(R.id.timeButton);
+
+        //switch colors for set colorblind options
+        colorSwitch();
 
         //adds textlistener to Title field, to listen to input
         mtitleEditText.addTextChangedListener(mTextEditorWatcher);
 
-        //gets uri from the intent that was used to launch this activity, if it was launched from
-        //the floating action button (big plus symbol) then there won't be a URI, meaning the user is creating
-        //a task
+        /*gets uri from the intent that was used to launch this activity, if it was launched from
+        the floating action button (big plus symbol) then there won't be a URI, meaning the user is creating
+        a task*/
         uriCurrentTask = getIntent().getData();
 
-        /*RECURRING SPINNER*/
+        /*RECURRING SPINNER LOGIC*/
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -232,10 +193,11 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        mRecurringSpinner.setAdapter(adapter);
 
 
-        /*LABEL SPINNER*/
+        /*LABEL SPINNER LOGIC*/
+
         mLabelSpinner = findViewById(R.id.labelSpinner);
         ArrayList<String> labelSpinnerArray = new ArrayList<String>();
         taskDBHelper mDbHelper = new taskDBHelper(this);
@@ -243,6 +205,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.LABEL_TABLE_NAME,null);
 
         labelSpinnerArray.add("No label");
+        //adds labels from the label table to the spinner
         while (cursorc.moveToNext()) {
             int labelNameColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_LABEL_NAME);
             labelSpinnerArray.add(cursorc.getString(labelNameColumnIndex));
@@ -253,31 +216,36 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         mLabelSpinner.setAdapter(labelSpinnerAdapter);
 
 
-        /**if URI is "null" then we know we're creating a new task. If it isn't null
-         * then we know we're editing an existing task
-         *
-         * */
+        /*if URI is "null" then we know we're creating a new task. If it isn't null
+         * then we know we're editing an existing task*/
         if (uriCurrentTask == null) {
             setTitle("Create a task");
             mReminderUnit = "";
             mReminderUnitBefore = "";
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            mLabel = preferences.getString("label","All");
 
-            //get Todays date and set up private variables for calander to use
+            /*Sets the Label spinner if the user has opened the editor while viewing it within a label
+            category */
+            for(int i =0; i<mLabelSpinner.getCount();i++){
+                if(mLabelSpinner.getItemAtPosition(i).toString().equals(mLabel) && !mLabel.equals("All")){
+                    mLabelSpinner.setSelection(i);
+                }
+            }
 
+            //get today's date and set up private variables for calender to use
             Calendar c = Calendar.getInstance();
             currentYear = c.get(Calendar.YEAR);
             currentMonth = c.get(Calendar.MONTH);
             currentDay = c.get(Calendar.DAY_OF_MONTH);
 
-            /** set {@link com.example.android.flexitask.R.id.dateDiplayLabel} to todays date */
-
+            /*set {@link com.example.android.flexitask.R.id.dateDiplayLabel} to today's date */
             String chosenDateAsString = DateFormat.getDateInstance().format(c.getTime());
             TextView dateLabel = (TextView) findViewById(R.id.dateDiplayLabel);
             dateLabel.setText(chosenDateAsString);
             mDate = c.getTimeInMillis();
 
-            /**set {@link com.example.android.flexitask.R.id.timeDisplayLabel} to todays date*/
-
+            /*set {@link com.example.android.flexitask.R.id.timeDisplayLabel} to today's date*/
             currentHour = c.get(Calendar.HOUR_OF_DAY);
             currentMin = c.get(Calendar.MINUTE);
             TextView timeLabel = (TextView) findViewById(R.id.timeDisplayLabel);
@@ -286,11 +254,11 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         } else {
 
             setTitle("Edit a task");
-
+            calendar.setTimeInMillis(dateTime);
         }
 
+         /*DATE BUTTON LOGIC*/
 
-        RelativeLayout dateButton = (RelativeLayout) findViewById(R.id.dateButton);
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,7 +267,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 if (uriCurrentTask == null) {
                     //bundle for argument to pass to date picker
                     Bundle args = new Bundle();
-                    /**Add date (current date set in OnCreate) to bundle*/
+                    /*Add date (current date set in OnCreate) to bundle*/
                     calendar.set(Calendar.YEAR,currentYear);
                     calendar.set(Calendar.MONTH,currentMonth);
                     calendar.set(Calendar.DAY_OF_MONTH,currentDay);
@@ -311,7 +279,6 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                     //create new fragment
                     android.support.v4.app.DialogFragment datePicker = new DatePickerFragment();
 
-                    android.support.v4.app.DialogFragment alarmTimePicker = new TimePickerFragment();
                     //pass it the bundle of argument
                     datePicker.setArguments(args);
                     //Show fragment as a dialog
@@ -319,13 +286,12 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 }
                 //ELSE if updating existing task
                 else {
+                    //set date label to be data and time from Task's data in the database
                     Bundle args = new Bundle();
-                    /**get Year month and day from the Date (in milliseconds)*/
+                    /*get Year month and day from the Date (in milliseconds)*/
 
                     Calendar c = Calendar.getInstance();
                     c.setTimeInMillis(mDate);
-
-
 
                     int year = c.get(Calendar.YEAR);
                     int month = c.get(Calendar.MONTH);
@@ -350,7 +316,8 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
             }
         });
 
-        RelativeLayout timeButton = (RelativeLayout) findViewById(R.id.timeButton);
+        /*TIME BUTTON LOGIC*/
+
         timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -359,7 +326,6 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 if (uriCurrentTask == null) {
 
                     /*Get current time and add to bundle*/
-
                     Bundle args = new Bundle();
                     Calendar c = Calendar.getInstance();
                     int hour = c.get(Calendar.HOUR_OF_DAY);
@@ -381,7 +347,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 //ELSE you're updating existing task
                 else {
 
-                     /*Get time value for the task (already retrived by the loader from the time column)*/
+                     /*Get time value for the task (already retrieved by the loader from the time column)*/
 
                     Bundle args = new Bundle();
                     String[] stringParts = mTime.split(":");
@@ -405,8 +371,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
             }
         });
 
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mRecurringSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -632,20 +597,25 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
         switch (colourSetting) {
             case ("DCOLOUR"):
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
+                doneFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentD)));
+
 
                 break;
 
             case ("PCOLOUR"):
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
+                doneFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentP)));
 
                 break;
 
             case ("TCOLOUR"):
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
+                doneFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentT)));
 
                 break;
             default:
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                doneFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
         }
     }
 
@@ -711,6 +681,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 int idColumnIndex = data.getColumnIndex(taskContract.TaskEntry._ID);
                 int descriptionColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_DESCRIPTION);
                 int dateColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_DATE);
+                int dateTimeColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_DATETIME);
                 int timeColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_TIME);
                 int RecurringColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
                 int labelColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_LABEL);
@@ -722,16 +693,16 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 String descriptionString = data.getString(descriptionColumnIndex);
                 long dateLong = data.getLong(dateColumnIndex);
                 String timeString = data.getString(timeColumnIndex);
-                int recurringDaysInt = data.getInt(RecurringColumnIndex);
+                int mRecurringDaysEditMode = data.getInt(RecurringColumnIndex);
                 String reminderUnit = data.getString(reminderUnitColumnIndex);
                 String reminderUnitBefore = data.getString(reminderUnitBeforeColumnIndex);
                 int id = data.getInt(idColumnIndex);
+                dateTime = data.getLong(dateTimeColumnIndex);
 
 
-                /**set values for{@link #mDate},{@link #mTime}*/
+                /*set values for{@link #mDate},{@link #mTime}*/
                 mDate = dateLong;
                 mTime = timeString;
-                mRecurringDaysEditMode = recurringDaysInt;
                 mLabel = data.getString(labelColumnIndex);
                 mReminderUnit = reminderUnit;
                 mReminderUnitBefore = reminderUnitBefore;
@@ -744,7 +715,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                     }
                 }
 
-                /**select the appropriate {@link R.id.recurringSpinner} option*/
+                /*select the appropriate {@link R.id.recurringSpinner} option*/
                 switch (mRecurringDaysEditMode) {
                     case (taskContract.TaskEntry.RECURRING_NEVER):
                         mRecurringSpinner.setSelection(0);
@@ -766,7 +737,7 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                         mCustomRecurring.setText(String.valueOf(mRecurringDaysEditMode));
                 }
 
-                /**set textfield labels for {@link R.id.title}, {@link R.id.descriptionEditText},
+                /*set textfield labels for {@link R.id.title}, {@link R.id.descriptionEditText},
                  * {@link R.id.dateDiplayLabel} & {@link R.id.timeDisplayLabel}*/
 
                 //title & description
@@ -850,7 +821,9 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 PendingIntent.FLAG_NO_CREATE); // find the old PendingIntent
         if (pi != null) {
             // Now cancel the alarm that matches the old PendingIntent
-            alarmManager.cancel(pi);
+            if (alarmManager != null) {
+                alarmManager.cancel(pi);
+            }
         }
 
         //Makes sure there is a valid reminder date
@@ -861,9 +834,6 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                 //intent.putExtra("date", Duedate);
 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, taskID, intent, 0);
-
-                //get time before for new due date item
-                //delete if alarm lready exists
 
 
                 int reminderValue = 3000;
@@ -886,7 +856,9 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
                         reminderCalander.add(Calendar.WEEK_OF_YEAR, -Integer.valueOf(mReminderUnit));
                         break;
                 }
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, (reminderCalander.getTimeInMillis()), pendingIntent);
+                if (alarmManager != null) {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, (reminderCalander.getTimeInMillis()), pendingIntent);
+                }
             }
         }
 

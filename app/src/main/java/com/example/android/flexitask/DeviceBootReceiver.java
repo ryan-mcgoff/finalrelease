@@ -16,23 +16,34 @@ import com.example.android.flexitask.data.taskDBHelper;
 import java.util.Calendar;
 
 /**
- * Created by rymcg on 28/09/2018.
+ * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
+ * This class is called by the Android system when the user's device is turned on.
+ * The class sets up the daily notification again and each individual task reminder
+ * that was set by the user. This is necessary because the Android system deletes all pending
+ * intents/alarms when the user's device is switched off, so they need to be set up again.
+ *
  */
+public class DeviceBootReceiver extends BroadcastReceiver {
 
-public class DeviceBootReciever extends BroadcastReceiver {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        //checks that the class was in-fact called by the Android system booting up again/turning on
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            //reset all alarms and notifications
 
+            //reset all alarms and notifications
             setDailyNotification(context);
             setFixedNotifications(context);
-
-
         }
     }
 
+    /**
+     * Sets up daily notification again
+     * @param context the application's context
+     */
     public void setDailyNotification(Context context) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -50,7 +61,7 @@ public class DeviceBootReciever extends BroadcastReceiver {
         timePickerC.set(Calendar.HOUR_OF_DAY, hour);
         timePickerC.set(Calendar.MINUTE, min);
 
-        // if the time is after or equal to the notification hour / min schedule alarm for the next day
+        //if the time is after or equal to the notification hour / min schedule alarm for the next day
         if (todayC.after(timePickerC)) {
             timePickerC.add(Calendar.DAY_OF_YEAR, 1); //add day
         }
@@ -67,15 +78,19 @@ public class DeviceBootReciever extends BroadcastReceiver {
         editor.apply();
     }
 
+
+    /**
+     * Sets up each fixed task notification that was set by the user.
+     * @param context the application's context
+     */
     public void setFixedNotifications(Context context) {
-        //curse through each fixed task where field isn't empty
-        // work out alarm date, if before current time don't set
 
         taskDBHelper mDbHelper = new taskDBHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         Calendar todayDate = Calendar.getInstance();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 
+        //Creates a query request for Fixed tasks with set reminder fields
         Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.TABLE_NAME + " WHERE " +
                 taskContract.TaskEntry.COLUMN_TYPE_TASK + " = " + taskContract.TaskEntry.TYPE_FIXED +
                 " AND " + taskContract.TaskEntry.COLUMN_REMINDER_UNIT + " != ''", null);
@@ -86,16 +101,12 @@ public class DeviceBootReciever extends BroadcastReceiver {
             int ReminderUnitBeforeColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT_BEFORE);
             int ReminderUnitColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT);
             int dueDateColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_DATETIME);
-            //get values
 
             String taskTitle = cursorc.getString(titleColumnIndex);
             int taskID = cursorc.getInt(idColumnIndex);
             String mReminderUnitBefore = cursorc.getString(ReminderUnitBeforeColumnIndex);
             String mReminderUnit = cursorc.getString(ReminderUnitColumnIndex);
             long dueDate = cursorc.getLong(dueDateColumnIndex);
-
-            //checkdue date
-
 
             Intent intent = new Intent(context, AlertReceiverReminder.class);
             intent.putExtra("title", taskTitle);
@@ -105,7 +116,7 @@ public class DeviceBootReciever extends BroadcastReceiver {
             Calendar reminderCalander = Calendar.getInstance();
             reminderCalander.setTimeInMillis(dueDate);
 
-            //makes sure the alarm date hasn't already passed
+            //makes sure the alarm date hasn't already passed before setting alarm
             if (!todayDate.after(reminderCalander)) {
 
                 switch (mReminderUnitBefore) {

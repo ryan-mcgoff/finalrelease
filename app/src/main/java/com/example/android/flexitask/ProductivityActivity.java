@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import me.itangqi.waveloadingview.WaveLoadingView;
@@ -16,17 +18,22 @@ import me.itangqi.waveloadingview.WaveLoadingView;
  */
 
 public class ProductivityActivity extends AppCompatActivity implements EditWeeklyGoalDialog.EditGoalListener {
+
+    private Toolbar toolbar;
+    private WaveLoadingView waveLoadingView;
+    private Button editButton;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.productivity_activity);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        WaveLoadingView waveLoadingView = findViewById(R.id.waveView);
+        waveLoadingView = findViewById(R.id.waveView);
+        editButton = findViewById(R.id.editButton);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         TextView flexiCount = findViewById(R.id.flexiCount);
@@ -65,10 +72,42 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         }
 
         goalDisplay.setText(goalDisplayMessage);
+        colorSwitch();
     }
 
-    public void resetLabel(){
+    /*Checks user colour preferences and changes UI*/
+    private void colorSwitch() {
+        String colourSetting = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                .getString("color_preference_key", "OCOLOUR");
 
+        switch (colourSetting) {
+            case ("DCOLOUR"):
+                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
+                waveLoadingView.setWaveColor(getResources().getColor(R.color.colorPrimaryD));
+                editButton.setTextColor(getResources().getColor(R.color.colorPrimaryD));
+
+
+                break;
+
+            case ("PCOLOUR"):
+
+                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
+                waveLoadingView.setWaveColor(getResources().getColor(R.color.colorPrimaryP));
+                editButton.setTextColor(getResources().getColor(R.color.colorPrimaryP));
+
+                break;
+
+            case ("TCOLOUR"):
+                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
+                waveLoadingView.setWaveColor(getResources().getColor(R.color.colorPrimaryT));
+                editButton.setTextColor(getResources().getColor(R.color.colorPrimaryT));
+
+                break;
+            default:
+                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                waveLoadingView.setWaveColor(getResources().getColor(R.color.colorPrimary));
+                editButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+        }
     }
 
     @Override

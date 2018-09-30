@@ -11,6 +11,9 @@ import android.support.v4.content.Loader;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -55,10 +58,7 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
          super.onCreateView(inflater, container, savedInstanceState);
 
-
         rootView = inflater.inflate(R.layout.fragment_task_history, container, false);
-
-
         //checks colour preferences set by the user and makes appropriate changes
         checkColourChange();
 
@@ -150,8 +150,35 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
         });
 
 
+        setHasOptionsMenu(true);
         return rootView;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.timeline_menu, menu);
+        menu.removeItem(menu.findItem(R.id.deleteLabel).getItemId());
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.help:
+                //FOR DEBUGGING PURPOSES
+                HelpDialog bd = new HelpDialog();
+                Bundle b = new Bundle();
+                b.putString(HelpDialog.TITLE_KEY, "History help");
+                b.putString(HelpDialog.MESSAGE_KEY, getResources().getString(R.string.historyHelpMessage));
+                bd.setArguments(b);
+                bd.show(getFragmentManager(), "help fragment");
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     /**
      * Method changes colours for the history fragment based on what colour blind mode the user has selected

@@ -444,11 +444,14 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.deleteAll:
+            case R.id.help:
                 //FOR DEBUGGING PURPOSES
-                bottomBar.setVisibility(View.GONE);
-                mFabFlexi.setVisibility(View.VISIBLE);
-                deleteAllTasks();
+                HelpDialog bd = new HelpDialog();
+                Bundle b = new Bundle();
+                b.putString(HelpDialog.TITLE_KEY, "FlexiTask help");
+                b.putString(HelpDialog.MESSAGE_KEY, getResources().getString(R.string.flexiHelpMessage));
+                bd.setArguments(b);
+                bd.show(getFragmentManager(), "help fragment");
                 return true;
             case R.id.deleteLabel:
                 deleteLabel();

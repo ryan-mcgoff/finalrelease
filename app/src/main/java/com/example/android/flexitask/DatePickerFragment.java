@@ -9,13 +9,11 @@ import android.support.v4.app.DialogFragment;
 import java.util.Calendar;
 
 /**
- * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
+ * Created by Ryan McGoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
  *
  * Creates a Date picker dialog fragment using the dates that are passed to it.
  * The dialog prompts the user to select a date
  */
-
-
 public class DatePickerFragment extends DialogFragment {
 
 
@@ -23,7 +21,7 @@ public class DatePickerFragment extends DialogFragment {
      * Creates a datePicker dialog with the default date that is passed to it
      *
      * @param savedInstanceState a bundle of default date values for the DatePicker to set itself to
-     *                           (if creating a new task this is todays date, otherwise the values stored in the database)
+     *                           (if creating a new task this is today's date, otherwise the values stored in the database)
      * @return a new instance of the datePickerDialog
      */
     @NonNull

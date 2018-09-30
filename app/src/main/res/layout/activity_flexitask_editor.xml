@@ -260,6 +260,7 @@
         android:onClick="insertTask"
         android:src="@drawable/ic_done_black_24dp"
         app:layout_anchor="@id/appbar"
+        android:tint="@color/whiteC"
         app:layout_anchorGravity="bottom|right|end"/>
 </android.support.design.widget.CoordinatorLayout>
 

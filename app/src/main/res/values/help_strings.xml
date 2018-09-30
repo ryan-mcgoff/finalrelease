@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="flexiHelpMessage">FlexiTasks are tasks without a fixed date. They still have a rough time frame they need to be completed in, but this time frame is flexible. They are ranked and given a priority color based on how due/overdue they are relative to their time frame. For instance a weekly task that is 1 day overdue is considered more overdue than a yearly task that is 1 week overdue.
+</string>
+    <string name="fixedHelpMessage">FixedTasks are tasks with fixed due dates, meaning they need to be completed at a specified time and date</string>
+    <string name="settingsHelpMessage">The settings page lets you set a time for daily notification and change the apps color preferences to support a color deficiency
+</string>
+    <string name="historyHelpMessage">The history tab lets you view previously completed tasks. You can filter by task type and completion date.
+</string>
+
+
+
+
+</resources>
