@@ -10,7 +10,7 @@ import java.util.Calendar;
 
 /**
  * Created by Ryan McGoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
- *
+ * <p>
  * Creates a Date picker dialog fragment using the dates that are passed to it.
  * The dialog prompts the user to select a date
  */

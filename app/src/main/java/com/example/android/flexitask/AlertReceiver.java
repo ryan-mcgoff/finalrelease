@@ -37,7 +37,7 @@ public class AlertReceiver extends BroadcastReceiver {
      * helper class to construct and then display that notification.
      *
      * @param context app context
-     * @param intent intent passed to pending intent when creating alarm
+     * @param intent  intent passed to pending intent when creating alarm
      */
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -47,7 +47,7 @@ public class AlertReceiver extends BroadcastReceiver {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean dailySwitch = preferences.getBoolean("daily", false);
 
-        if(dailySwitch) {
+        if (dailySwitch) {
 
             mDbHelper = new taskDBHelper(context);
             SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -81,7 +81,7 @@ public class AlertReceiver extends BroadcastReceiver {
         c.add(Calendar.DAY_OF_YEAR, 1); //add day
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,intent,0);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
 }

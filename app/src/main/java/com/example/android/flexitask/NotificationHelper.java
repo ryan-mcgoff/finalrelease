@@ -89,10 +89,14 @@ public class NotificationHelper extends ContextWrapper {
         }
         else {
 
-            for (int i = 0; i < message.size(); i++) {
+            for (int i = 0; i < 10; i++) {
                 if (message.get(i) != null) {
                     inboxStyle.addLine(message.get(i));
                 }
+            }
+            if(message.size()>10){
+                inboxStyle.addLine("");
+                inboxStyle.addLine("More...");
             }
         }
 

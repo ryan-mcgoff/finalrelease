@@ -14,14 +14,17 @@ import android.widget.TextView;
 import me.itangqi.waveloadingview.WaveLoadingView;
 
 /**
- * Created by rymcg on 13/09/2018.
+ * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
+ * <p>
+ * Checks the users goal and how many completed tasks they have done for the week and uses an animation
+ * from https://github.com/tangqi92/WaveLoadingView to display this information along with lifetime stats.
  */
-
 public class ProductivityActivity extends AppCompatActivity implements EditWeeklyGoalDialog.EditGoalListener {
 
     private Toolbar toolbar;
     private WaveLoadingView waveLoadingView;
     private Button editButton;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,31 +46,29 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         int fixedCountInt = preferences.getInt("fixedCount", 0);
         flexiCount.setText(String.valueOf(flexiCountInt));
         fixedCount.setText(String.valueOf(fixedCountInt));
-        totalCount.setText(String.valueOf(flexiCountInt+fixedCountInt));
+        totalCount.setText(String.valueOf(flexiCountInt + fixedCountInt));
 
         //get goal value and week completed tasks value
         TextView goalDisplay = findViewById(R.id.goalDisplayLabel);
-        long weekTasks = preferences.getLong("weekTasks",0);
-        long goal = preferences.getInt("goal",5);
+        long weekTasks = preferences.getLong("weekTasks", 0);
+        long goal = preferences.getInt("goal", 5);
 
         String goalDisplayMessage = String.valueOf(weekTasks) + "/" + String.valueOf(goal) + " Tasks";
 
         int percentage;
 
-        if(goal!=0) {
+        if (goal != 0) {
             percentage = (int) ((weekTasks * 100 / goal));
-        }
-        else{
+        } else {
             percentage = 0;
         }
 
-        totalCount.setText(String.valueOf(flexiCountInt+fixedCountInt));
+        totalCount.setText(String.valueOf(flexiCountInt + fixedCountInt));
 
-        if(percentage>100){
+        if (percentage > 100) {
             waveLoadingView.setProgressValue(100);
 
-        }
-        else{
+        } else {
             waveLoadingView.setProgressValue(percentage);
         }
 
@@ -117,18 +118,23 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
     }
 
 
-    /**Called when Edit Button is clicked*/
-    public void openDialog(View view){
+    /**
+     * Called when Edit Button is clicked
+     */
+    public void openDialog(View view) {
         EditWeeklyGoalDialog goalDialog = new EditWeeklyGoalDialog();
-        goalDialog.show(getSupportFragmentManager(),"newEditGoalDialog");
+        goalDialog.show(getSupportFragmentManager(), "newEditGoalDialog");
     }
 
 
+    /**
+     * saves new goal
+     */
     @Override
     public void applyNewGoal(int goal) {
         //set Goal
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor preferencesEdit =preferences.edit().putInt("goal",goal);
+        SharedPreferences.Editor preferencesEdit = preferences.edit().putInt("goal", goal);
         preferencesEdit.apply();
 
 

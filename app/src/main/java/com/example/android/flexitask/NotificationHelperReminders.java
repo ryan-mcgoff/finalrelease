@@ -14,11 +14,10 @@ import android.support.v7.preference.PreferenceManager;
 import java.util.ArrayList;
 
 /**
- * Created by rymcg on 9/09/2018.
+ * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
+ * Notification helper is in charge of creating channels (a requirement for devices running software higher than
+ * oreo) and creating the notification that alert receiver will broadcast for Task Reminder.
  */
-
-
-
 public class NotificationHelperReminders extends ContextWrapper {
     public static final String CHANNELID = "channel2ID";
     public static final String CHANNELNAME = "Reminders";
@@ -27,18 +26,18 @@ public class NotificationHelperReminders extends ContextWrapper {
     private NotificationManager mNotificationManager;
 
 
-
     public NotificationHelperReminders(Context base) {
         super(base);
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannels();
         }
     }
+
     @TargetApi(Build.VERSION_CODES.O)
-    public void createChannels(){
+    public void createChannels() {
         //Creates channel
 
-        NotificationChannel notificationChannel = new NotificationChannel(CHANNELID,CHANNELNAME,
+        NotificationChannel notificationChannel = new NotificationChannel(CHANNELID, CHANNELNAME,
                 NotificationManager.IMPORTANCE_HIGH);
         notificationChannel.enableLights(true);
         notificationChannel.enableVibration(true);
@@ -48,9 +47,9 @@ public class NotificationHelperReminders extends ContextWrapper {
         getNotificationManager().createNotificationChannel(notificationChannel);
     }
 
-    public NotificationManager getNotificationManager(){
+    public NotificationManager getNotificationManager() {
 
-        if (mNotificationManager==null){
+        if (mNotificationManager == null) {
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         }
@@ -60,19 +59,17 @@ public class NotificationHelperReminders extends ContextWrapper {
 
     /**
      * Builds a notification for alter receiver to use
-     * @param title of the notification
+     *
+     * @param title   of the notification
      * @param message for the getChannel() method to parse
      * @return notification Builder object for alert receiver to broadcast
      */
-    public NotificationCompat.Builder getChannel(String title, String message){
+    public NotificationCompat.Builder getChannel(String title, String message) {
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(),CHANNELID)
+        return new NotificationCompat.Builder(getApplicationContext(), CHANNELID)
                 .setContentTitle(title)
-                .setContentText("")
-                .setSmallIcon(R.drawable.task_selector);
-
-        return mBuilder;
-
+                .setContentText(message)
+                .setSmallIcon(R.drawable.ic_launcher_foreground);
     }
 
 }

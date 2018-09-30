@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)-->
-<!-- Code for floating ActionButton, including animations and design from GitHub
-https://github.com/Clans/FloatingActionButton-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/timeLineMainLayout"
     android:layout_width="match_parent"
@@ -42,42 +40,26 @@ https://github.com/Clans/FloatingActionButton-->
         <TextView
 
             android:id="@+id/empty_title_text"
-
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
-
             android:layout_centerHorizontal="true"
-
             android:fontFamily="sans-serif-medium"
-
             android:paddingTop="16dp"
-
-            android:text="It's a bit lonely in here..."
-
+            android:text="@string/it_s_a_bit_lonely_in_here"
             android:textAppearance="?android:textAppearanceMedium" />
 
 
         <TextView
 
             android:id="@+id/empty_subtitle_text"
-
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
-
             android:layout_below="@+id/empty_title_text"
-
             android:layout_centerHorizontal="true"
-
             android:fontFamily="sans-serif"
-
             android:paddingTop="8dp"
-
-            android:text="To get started, click the plus symbol"
-
+            android:text="@string/to_get_started_click_the_plus_symbol"
             android:textAppearance="?android:textAppearanceSmall"
-
             android:textColor="#A2AAB0" />
 
     </RelativeLayout>
@@ -105,8 +87,7 @@ https://github.com/Clans/FloatingActionButton-->
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:background="@color/toolBarColor"
-        android:contentDescription="ToolBar"
-        android:elevation="6dp"
+        android:contentDescription="@string/toolbar"
         android:visibility="gone">
 
         <LinearLayout
@@ -119,7 +100,7 @@ https://github.com/Clans/FloatingActionButton-->
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:contentDescription="Done Button"
+                android:contentDescription="@string/done_button"
                 android:src="@drawable/ic_done_black_24dp" />
 
             <ImageView
@@ -128,7 +109,7 @@ https://github.com/Clans/FloatingActionButton-->
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:contentDescription="Edit button"
+                android:contentDescription="@string/edit_button"
                 android:src="@drawable/ic_mode_edit_black_24dp" />
 
             <ImageView
@@ -137,9 +118,17 @@ https://github.com/Clans/FloatingActionButton-->
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:contentDescription="Delete Button"
+                android:contentDescription="@string/delete_button"
                 android:src="@drawable/ic_delete_black_24dp" />
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/empty_view"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="269dp"
+        android:text="" />
 </RelativeLayout>

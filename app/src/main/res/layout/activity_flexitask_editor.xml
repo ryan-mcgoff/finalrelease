@@ -1,23 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)-->
+<?xml version="1.0" encoding="utf-8"?><!-- Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)-->
 
 <android.support.design.widget.CoordinatorLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows = "true"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
-
-<ScrollView
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="true"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
 
             <android.support.design.widget.AppBarLayout
@@ -28,21 +27,22 @@
                 android:paddingTop="32dp">
 
                 <ImageView
+                    android:id="@+id/backButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_back_white_24dp"
-                    app:layout_anchor="@id/appbar"
-                    android:id="@+id/backButton"
+                    android:contentDescription="@string/back_button"
                     android:onClick="goBack"
                     android:padding="8dp"
+                    android:src="@drawable/ic_arrow_back_white_24dp"
 
-                    app:layout_anchorGravity="top|left|end"/>
+                    app:layout_anchor="@id/appbar"
+                    app:layout_anchorGravity="top|left|end" />
 
                 <LinearLayout
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:contentDescription="title and description container"
+                    android:contentDescription="@string/title_and_description_container"
                     android:orientation="vertical"
                     android:paddingBottom="56dp"
                     android:paddingLeft="32dp"
@@ -54,7 +54,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:contentDescription="Task title"
+                        android:contentDescription="@string/title"
                         android:textColorHint="#FFFFFF">
 
                         <EditText
@@ -62,7 +62,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:hint="Title"
+                            android:hint="@string/titleC"
                             android:textColor="#FFFFFF" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
-                        android:contentDescription="Task description"
+                        android:contentDescription="@string/task_description"
                         android:textColorHint="#FFFFFF">
 
                         <EditText
@@ -86,7 +86,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:hint="Description"
+                            android:hint="@string/descriptionC"
                             android:textColor="#FFFFFF" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -95,160 +95,153 @@
             </android.support.design.widget.AppBarLayout>
 
 
-    <LinearLayout
-        android:id="@+id/viewBb"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:focusable="true"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="Next Due Date"
-            android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/dueDateImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_date_range_black_24dp" />
-
-            <TextView
-                android:id="@+id/dueDateTextLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/dueDateImage"
-                android:layout_toRightOf="@+id/dueDateImage"
-                android:padding="4dp"
-                android:text="Next Due"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/dueDateDisplayLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/dueDateTextLabel"
-                android:layout_alignStart="@+id/dueDateTextLabel"
-                android:layout_below="@+id/dueDateTextLabel"
-                android:padding="4dp"
-                android:text="date" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="time selector"
-            android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/labelImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_label_outline_black_24dp" />
-
-            <TextView
-                android:id="@+id/labelSpinnerLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/labelImage"
-                android:layout_toRightOf="@+id/labelImage"
-                android:padding="4dp"
-                android:text="Label"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/labelSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/labelSpinnerLabel"
-                android:layout_toEndOf="@+id/labelImage"
-                android:layout_toRightOf="@+id/labelImage"
-                android:contentDescription="click to select a label for the task">
-
-            </Spinner>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/RecurringImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_replay_black_24dp" />
-
-            <TextView
-                android:id="@+id/RecurringTextLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/RecurringImage"
-                android:layout_toRightOf="@+id/RecurringImage"
-                android:padding="4dp"
-                android:text="Recurring"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/recurringSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/RecurringTextLabel"
-                android:layout_toEndOf="@+id/RecurringImage"
-                android:layout_toRightOf="@+id/RecurringImage"
-                android:contentDescription="Recurring Period Selector">
-
-            </Spinner>
-
             <LinearLayout
-                android:id="@+id/customReccuringSelected"
+                android:id="@+id/viewBb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/recurringSpinner"
-                android:layout_toRightOf="@id/recurringSpinner"
-                android:padding="16dp"
-                android:visibility="gone">
+                android:focusable="true"
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Every" />
+                    android:contentDescription="@string/next_due_date"
+                    android:padding="8dp">
 
-                <EditText
-                    android:id="@+id/customRecurringText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:maxLength="3"
-                    android:text="0" />
+                    <ImageView
+                        android:id="@+id/dueDateImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:contentDescription="@string/date"
+                        android:src="@drawable/ic_date_range_black_24dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/dueDateTextLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/dueDateImage"
+                        android:padding="4dp"
+                        android:text="@string/next_due"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/dueDateDisplayLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignStart="@+id/dueDateTextLabel"
+                        android:layout_below="@+id/dueDateTextLabel"
+                        android:padding="4dp"
+                        android:text="@string/date" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="days" />
+                    android:clickable="true"
+                    android:contentDescription="@string/time_selector"
+                    android:focusable="true"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/labelImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:contentDescription="@string/label"
+                        android:src="@drawable/ic_label_outline_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/labelSpinnerLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/labelImage"
+                        android:padding="4dp"
+                        android:text="@string/labelC"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/labelSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/labelSpinnerLabel"
+                        android:layout_toEndOf="@+id/labelImage"
+                        android:contentDescription="@string/click_to_select_a_label_for_the_task">
+
+                    </Spinner>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/RecurringImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:contentDescription="@string/recurring"
+                        android:src="@drawable/ic_replay_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/RecurringTextLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/RecurringImage"
+                        android:padding="4dp"
+                        android:text="@string/recurringC"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/recurringSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/RecurringTextLabel"
+                        android:layout_toEndOf="@+id/RecurringImage"
+                        android:contentDescription="@string/recurring_period_selector">
+
+                    </Spinner>
+
+                    <LinearLayout
+                        android:id="@+id/customReccuringSelected"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/recurringSpinner"
+                        android:padding="16dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/every" />
+
+                        <EditText
+                            android:id="@+id/customRecurringText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@string/_0"
+                            tools:ignore="LabelFor" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/days" />
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
             </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
-
-
-
-
-
-    </LinearLayout>
-
-    </LinearLayout>
-
-</ScrollView>
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/doneFab"
@@ -259,9 +252,9 @@
         android:focusable="true"
         android:onClick="insertTask"
         android:src="@drawable/ic_done_black_24dp"
-        app:layout_anchor="@id/appbar"
         android:tint="@color/whiteC"
-        app:layout_anchorGravity="bottom|right|end"/>
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|right|end" />
 </android.support.design.widget.CoordinatorLayout>
 
 

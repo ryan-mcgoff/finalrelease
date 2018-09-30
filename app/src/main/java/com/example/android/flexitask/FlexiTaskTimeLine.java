@@ -47,11 +47,10 @@ import java.util.Calendar;
 
 /**
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
- *
+ * <p>
  * A {@link Fragment} subclass for the flexi-task fragment of the app
  * that implements the {@link LoaderManager] interface to pass flexi task data to the a cursor
  * adaptor for the fragment's listview..
- *
  */
 public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -62,67 +61,56 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
     private ImageView doneButtonToolBar;
     private ImageView deleteButtonToolBar;
 
-
     //private FloatingActionButton mFabFixedTask;
     private android.support.design.widget.FloatingActionButton mFabFlexi;
 
-
-    /**
-     * Database helper that provides access to the database
-     */
+    //Database helper that provides access to the database
     private taskDBHelper mDbHelper;
 
-    /*ID of list item clicked*/
+    //ID of list item clicked
     private long item_iD;
-
     private Toolbar bottomBar;
-
     private Toolbar topBar;
-
     private boolean toolBarShown;
     private int lastClickedPostion;
     private long lastClickedID;
-
     private String labelSQL;
     private String label;
-
 
     public FlexiTaskTimeLine() {
         //empty public constructor
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         //inflates the XML layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_flexi_task_timeline, container, false);
 
-        // Find the ListView which will be populated with the tasks data
+        //Find the ListView which will be populated with the tasks data
         final ListView timeLineListView = (ListView) rootView.findViewById(R.id.timelineListView);
-
-
 
         //get label filter selected from the navigation bar
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        label = preferences.getString("label","All");
+        label = preferences.getString("label", "All");
 
-        if (!(label.equals("All"))){
-            labelSQL = "AND label = " + "'"+ label+"'";
+        if (!(label.equals("All"))) {
+            labelSQL = "AND label = " + "'" + label + "'";
 
-        }
-        else{
+        } else {
             labelSQL = "";
         }
 
 
-
         mDbHelper = new taskDBHelper(getActivity());
 
-        // Find and set empty view on the ListView, so that it shows a message when the list has 0 items.
+        //Find and set empty view on the ListView, so that it shows a message when the list has 0 items.
         View emptyView = rootView.findViewById(R.id.empty_view);
 
         timeLineListView.setEmptyView(emptyView);
@@ -138,9 +126,6 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         doneButtonToolBar = bottomBar.findViewById(R.id.done);
         deleteButtonToolBar = bottomBar.findViewById(R.id.delete);
 
-
-
-
         mFabFlexi = (android.support.design.widget.FloatingActionButton) rootView.findViewById(R.id.flexiFab);
 
         colorSwitch();
@@ -154,8 +139,6 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         });
 
 
-
-
         //gets postion and row ID details for seleted list_item
         timeLineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -163,7 +146,7 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 item_iD = id;
-                if (toolBarShown == false) {
+                if (!toolBarShown) {
                     lastClickedID = id;
                     lastClickedPostion = position;
 
@@ -201,15 +184,14 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                     lastClickedPostion = position;
                     timeLineListView.setItemChecked(position, false);
 
-                    if(label.equals("")){
+                    if (label.equals("")) {
                         getActivity().setTitle("Tasks");
-                    }else{
+                    } else {
                         getActivity().setTitle(label);
                     }
 
 
                     resetUI();
-
 
 
                 }
@@ -221,14 +203,13 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
             /*START OF TOOLBAR BUTTONS*/
 
 
-        /**EDITING BUTTON -
+        /*EDITING BUTTON -
          * gets the URI for the selected list item, and sends it to the editor activity for processing.
          */
         editButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), FlexiTaskEditor.class);
-
 
                 timeLineListView.setItemChecked(lastClickedPostion, false);
                 resetUI();
@@ -242,7 +223,6 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         });
 
 
-
         /** DONE BUTTON -
          * When the done button (tick) on the toolbar has been selected, the app updates
          * the last_completed_date field for that task/listitem to todays date
@@ -253,12 +233,7 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
             public void onClick(View v) {
 
                 Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
-
-                //db.query()
-                //Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.TABLE_NAME +
-                //        " WHERE " + taskContract.TaskEntry._ID + " = " + lastClickedID, null);
-
-                Cursor cursorc = getActivity().getContentResolver().query(currentTaskUri,null,null,null,null,null);
+                Cursor cursorc = getActivity().getContentResolver().query(currentTaskUri, null, null, null, null, null);
 
                 if (cursorc.moveToFirst()) {
                     Calendar c = Calendar.getInstance();
@@ -276,15 +251,15 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                     ContentValues cvHistory = new ContentValues();
                     String title = cursorc.getString(titleColumnIndex);
                     cvHistory.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, title);
-                    cvHistory.put(taskContract.TaskEntry.COLUMN_DESCRIPTION,"S");
-                    cvHistory.put(taskContract.TaskEntry.COLUMN_TYPE_TASK,taskContract.TaskEntry.TYPE_FLEXI);
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_DESCRIPTION, "S");
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_TYPE_TASK, taskContract.TaskEntry.TYPE_FLEXI);
 
                     cvHistory.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, String.valueOf(todayDate));
                     cvHistory.put(taskContract.TaskEntry.COLUMN_STATUS, String.valueOf(0));
                     cvHistory.put(taskContract.TaskEntry.COLUMN_DATE, String.valueOf(todayDate));
                     cvHistory.put(taskContract.TaskEntry.COLUMN_DATETIME, String.valueOf(todayDate));
 
-                    getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
+                    getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI, cvHistory);
 
 
                     // get the values from the Cursor for the given column index
@@ -296,25 +271,25 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                     ContentValues cv = new ContentValues();
                     cv.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, title);
                     cv.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, String.valueOf(todayDate));
-                    cv.put(taskContract.TaskEntry.COLUMN_DATE,String.valueOf(mDueDate));
+                    cv.put(taskContract.TaskEntry.COLUMN_DATE, String.valueOf(mDueDate));
 
-                    getContext().getContentResolver().update(currentTaskUri,cv,null,null);
-                    getContext().getContentResolver().notifyChange(currentTaskUri,null);
+                    getContext().getContentResolver().update(currentTaskUri, cv, null, null);
+                    getContext().getContentResolver().notifyChange(currentTaskUri, null);
                 }
 
                 mTaskCursorAdaptor.notifyDataSetChanged();
-                //gte number
+                //Get number
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                 int flexiCount = preferences.getInt("flexiCount", 0);
                 SharedPreferences.Editor editor = preferences.edit();
                 flexiCount++;
-                editor.putInt("flexiCount",flexiCount);
+                editor.putInt("flexiCount", flexiCount);
                 editor.apply();
 
                 long weeklygoalCount = preferences.getLong("weekTasks", 0);
                 SharedPreferences.Editor editor2 = preferences.edit();
                 weeklygoalCount++;
-                editor2.putLong("weekTasks",weeklygoalCount);
+                editor2.putLong("weekTasks", weeklygoalCount);
                 editor2.apply();
 
 
@@ -328,7 +303,7 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         });
 
             /* DELETE BUTTON -
-             * gets the URI for the selected listitem, and deletes it by calling cthe content resolver
+             * gets the URI for the selected listitem, and deletes it by calling the content resolver
              */
         deleteButtonToolBar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,12 +314,12 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 timeLineListView.setItemChecked(lastClickedPostion, false);
                 resetUI();
                 Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
-                getActivity().getContentResolver().delete(currentTaskUri,null,null);
+                getActivity().getContentResolver().delete(currentTaskUri, null, null);
 
             }
         });
 
-            /*END OF TOOLBAR BUTTONS*/
+        /*END OF TOOLBAR BUTTONS*/
 
         //when this fragment is first created, it will initalise the loader, which calls the OnCreate
         // loader method which in turn retrieves data from the database
@@ -393,13 +368,13 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
     }
 
     /**
-     * Method for reseting UI. Sets title back to the name of the app, and hides
+     * Method for resetting UI. Sets title back to the name of the app, and hides
      * the tool bar and shows the floatingActionButton
      */
     public void resetUI() {
-        if(label.equals("")){
+        if (label.equals("")) {
             getActivity().setTitle("Tasks");
-        }else{
+        } else {
             getActivity().setTitle(label);
         }
 
@@ -435,8 +410,8 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         inflater.inflate(R.menu.timeline_menu, menu);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        label = preferences.getString("label","All");
-        if(label.equals("All")) {
+        label = preferences.getString("label", "All");
+        if (label.equals("All")) {
             menu.removeItem(menu.findItem(R.id.deleteLabel).getItemId());
         }
     }
@@ -459,10 +434,14 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         return super.onOptionsItemSelected(item);
     }
 
-    public void deleteLabel(){
+    /**
+     * Deletes label from database
+     */
+    public void deleteLabel() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("label","All");
+        editor.putString("label", "All");
+        editor.apply();
         labelSQL = "";
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -476,7 +455,9 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
     }
 
-
+    /**
+     * Notifies the navigation bar that a label has been deleted
+     */
     private void notifyMainAcitivty() {
         Log.d("sender", "Broadcasting message");
         Intent intent = new Intent("labeldelete");
@@ -519,7 +500,8 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 taskContract.TaskEntry.COLUMN_RECCURING_PERIOD};
 
 
-        String WHERE = "task_type='1' AND status='1'AND status='1'"+labelSQL;;
+        String WHERE = "task_type='1' AND status='1'AND status='1'" + labelSQL;
+        ;
         Calendar cTodayDate = Calendar.getInstance();
         cTodayDate.set(Calendar.HOUR_OF_DAY, 0);
         cTodayDate.set(Calendar.MINUTE, 0);

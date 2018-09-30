@@ -21,30 +21,11 @@ import com.github.clans.fab.FloatingActionMenu;
 
 /**
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
- *
+ * <p>
  * A fragment that holds the {@link TaskPageAdaptor} for {@link FlexiTaskTimeLine} and {@link FixedTaskTimeLine} fragments
  */
 public class TimelineFragmentsContainer extends Fragment {
 
-
-    private static final int TASKLOADER = 0;
-    TaskCursorAdaptor mTaskCursorAdaptor;
-
-    private FloatingActionButton mFabFixedTask;
-    private FloatingActionMenu mFabMenu;
-    /**
-     * Database helper that will provide us access to the database
-     */
-    private taskDBHelper mDbHelper;
-
-    /*ID of list item clicked*/
-    private long item_iD;
-
-    private Toolbar bottomBar;
-
-    private boolean toolBarShown;
-
-    private DrawerLayout mDrawerLayout;
 
     private TabLayout tabLayout;
 
@@ -60,7 +41,7 @@ public class TimelineFragmentsContainer extends Fragment {
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
 
         // Create an adapter that knows which fragment should be shown on each page
-        TaskPageAdaptor adapter = new TaskPageAdaptor(getActivity(),getChildFragmentManager());
+        TaskPageAdaptor adapter = new TaskPageAdaptor(getActivity(), getChildFragmentManager());
 
         // Set the adapter onto the view pager
         viewPager.setAdapter(adapter);

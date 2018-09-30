@@ -16,15 +16,14 @@ import java.util.Date;
 
 /**
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
- *
+ * <p>
  * A Cursor Adaptor  lets Android manage resources more efficiently
  * by retrieving and releasing row and column values when the user scrolls, rather than loading everything into memory.
  * This is a custom extension of CursorAdaptor for tasks
- *
  */
 public class TaskHistoryAdaptor extends CursorAdapter {
 
-    public TaskHistoryAdaptor(Context context, Cursor c) {
+    TaskHistoryAdaptor(Context context, Cursor c) {
         super(context, c);
     }
 
@@ -53,11 +52,10 @@ public class TaskHistoryAdaptor extends CursorAdapter {
         int type = cursor.getInt(descriptionColumnIndex);
         String descriptionString = "";
 
-        if(type==(taskContract.TaskEntry.TYPE_FIXED)){
+        if (type == (taskContract.TaskEntry.TYPE_FIXED)) {
             descriptionString = "Fixed Task";
 
-        }
-        else{
+        } else {
             descriptionString = "Flexi Task";
 
         }

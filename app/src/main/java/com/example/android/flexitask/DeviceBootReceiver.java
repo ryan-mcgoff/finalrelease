@@ -21,7 +21,6 @@ import java.util.Calendar;
  * The class sets up the daily notification again and each individual task reminder
  * that was set by the user. This is necessary because the Android system deletes all pending
  * intents/alarms when the user's device is switched off, so they need to be set up again.
- *
  */
 public class DeviceBootReceiver extends BroadcastReceiver {
 
@@ -42,6 +41,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
     /**
      * Sets up daily notification again
+     *
      * @param context the application's context
      */
     public void setDailyNotification(Context context) {
@@ -81,6 +81,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
     /**
      * Sets up each fixed task notification that was set by the user.
+     *
      * @param context the application's context
      */
     public void setFixedNotifications(Context context) {

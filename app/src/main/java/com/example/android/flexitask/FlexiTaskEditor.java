@@ -39,77 +39,42 @@ import java.util.Calendar;
 
 /**
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
- *
+ * <p>
  * The flexitask Editor acts as an editor for both new tasks and an editor updating existing tasks.
  * The editor checks if the intent that started the activity had a URI (.getData()) to determine
  * if the user is trying to create a new task or update an existing task.
  * If it's updating, it uses a Cursorloader to retrieve the data for that task and uses the contentProviders (TaskProvider's)
  * update method instead of insert.
- *
  */
 public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    /**
-     * EditText field to enter Task's title
-     */
+    //EditText field to enter Task's title
     private EditText mtitleEditText;
 
-    /**
-     * EditText field to Task's description
-     */
+    //EditText field to Task's description
     private EditText mDescriptionEditText;
 
-    /**
-     * EditText field to enter the custom number of recurring days
-     */
+    //EditText field to enter the custom number of recurring days
     private EditText mCustomRecurring;
 
-    /**
-     * EditText field to select how often the task
-     */
+    //EditText field to select how often the task
     private Spinner mRecurringSpinner;
 
-    /**
-     * Date
-     */
-    private Long mDate;
-
-    /**
-     * time
-     */
-    private String mTime;
-    /**
-     * .....
-     */
     private boolean isCustomSpinnerSelected;
 
-    /**
-     * Number of Recurring days
-     */
+    //Number of Recurring days
     private int mNumberOfRecurringDays = taskContract.TaskEntry.RECURRING_NEVER;
 
-    /**
-     * Text count for Task Title
-     */
     private TextView textCountTaskTitle;
 
-    /**
-     * current URI for editing an existing task
-     */
+    //current URI for editing an existing task
     private Uri uriCurrentTask;
 
-
-    /*Spinner View for label selection*/
+    //Spinner View for label selection
     private Spinner mLabelSpinner;
 
     /*String containing the label for that task*/
     private String mLabel;
-
-
-    /**
-     * mRecurringDaysEditMode
-     */
-    private int mRecurringDaysEditMode;
 
     private long mDateLastCompleted;
 
@@ -117,23 +82,17 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
     private FloatingActionButton doneButton;
 
-    private  AppBarLayout appbar;
+    private AppBarLayout appbar;
 
-    private FloatingActionButton doneFab;
-
-
-    /**
-     * Boolean flag that keeps track of whether the Task has been edited (true) or not (false)
-     */
-    private boolean mTaskHasChanged = false;
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            /**This sets a textview to the current length*/
-            textCountTaskTitle.setText(String.valueOf(s.length()) + "/30");
+            //This sets a textCountView to the current length of the input from the editTextView
+            String text = String.valueOf(s.length()) + "/30";
+            textCountTaskTitle.setText(text);
         }
 
         public void afterTextChanged(Editable s) {
@@ -141,14 +100,13 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         }
     };
     /**
-     * Updates the due date as the user inputs how often the task recurs
+     * Updates the due date as the user types how often the task recurs
      */
     private final TextWatcher mCustomDayTextWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            /**This sets a textview to the current length*/
             if (mCustomRecurring.getText().toString().isEmpty()) {
                 mNumberOfRecurringDays = 0;
             } else {
@@ -165,36 +123,26 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
-     * the view, and we change the Task boolean to true.
+     * the view,  we change the Task boolean to true.
      */
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
 
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            mTaskHasChanged = true;
             return false;
         }
 
     };
 
 
+    /**
+     * {@inheritDoc}
+     * Sets up the editor activity based on if user is editing an existing task or creating a new one
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flexitask_editor);
-
-        //toolbar = findViewById(R.id.toolbar);
-        appbar = findViewById(R.id.appbar);
-
-
-
-        //setSupportActionBar(toolbar);
-       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
-
-
 
         // Find all relevant views that we will need to read user input from
         textCountTaskTitle = (TextView) findViewById(R.id.textCountTaskTitle);
@@ -203,6 +151,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         mDescriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
         mCustomRecurring = (EditText) findViewById(R.id.customRecurringText);
         doneButton = (FloatingActionButton) findViewById(R.id.doneFab);
+        appbar = findViewById(R.id.appbar);
 
         colorSwitch();
 
@@ -216,22 +165,22 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         uriCurrentTask = getIntent().getData();
 
 
-        /*RECURRING SPINNER*/
-        Spinner spinner = (Spinner) findViewById(R.id.recurringSpinner);
+        /*RECURRING SPINNER LOGIC*/
+
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.recurring_options_array_flexiTask, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        mRecurringSpinner.setAdapter(adapter);
 
-                /*LABEL SPINNER*/
+
         mLabelSpinner = findViewById(R.id.labelSpinner);
         ArrayList<String> labelSpinnerArray = new ArrayList<String>();
         taskDBHelper mDbHelper = new taskDBHelper(this);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.LABEL_TABLE_NAME,null);
+        Cursor cursorc = db.rawQuery("SELECT * FROM " + taskContract.TaskEntry.LABEL_TABLE_NAME, null);
 
         labelSpinnerArray.add("No label");
         while (cursorc.moveToNext()) {
@@ -239,19 +188,16 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
             labelSpinnerArray.add(cursorc.getString(labelNameColumnIndex));
         }
 
-        ArrayAdapter<String> labelSpinnerAdapter = new ArrayAdapter<String>(this,android.R.layout
-                .simple_spinner_dropdown_item,labelSpinnerArray);
+        ArrayAdapter<String> labelSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout
+                .simple_spinner_dropdown_item, labelSpinnerArray);
         mLabelSpinner.setAdapter(labelSpinnerAdapter);
-
-
-
 
 
         //if URI is "null" then we know we're creating a new task (FAB). If it isn't null
         //then we know we're editing an existing task
         if (uriCurrentTask == null) {
             setTitle("Create a task");
-            //set date last completed to todays date
+            //set date last completed to today's date
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, 0);
             c.set(Calendar.MINUTE, 0);
@@ -260,11 +206,11 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
             mDateLastCompleted = c.getTimeInMillis();
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            mLabel = preferences.getString("label","All");
+            mLabel = preferences.getString("label", "All");
 
             //Sets the Label spinner to the value for that row
-            for(int i =0; i<mLabelSpinner.getCount();i++){
-                if(mLabelSpinner.getItemAtPosition(i).toString().equals(mLabel) && !mLabel.equals("All")){
+            for (int i = 0; i < mLabelSpinner.getCount(); i++) {
+                if (mLabelSpinner.getItemAtPosition(i).toString().equals(mLabel) && !mLabel.equals("All")) {
                     mLabelSpinner.setSelection(i);
                 }
             }
@@ -275,9 +221,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         }
 
 
-
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mRecurringSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 LinearLayout custom = (LinearLayout) findViewById(R.id.customReccuringSelected);
@@ -343,7 +287,6 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
     /**
      * The insert task method is called when the user click the "tick" symbol in the editor
      * This determines whether we are inserting a task or updating an existing one by seeing if the URI is null or not.
-     *
      */
     public void insertTask(View view) {
 
@@ -358,7 +301,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
             return;
         }
 
-        if (isCustomSpinnerSelected == true) {
+        if (isCustomSpinnerSelected) {
             if (!mCustomRecurring.getText().toString().equals("")) {
                 mNumberOfRecurringDays = Integer.parseInt(mCustomRecurring.getText().toString().trim());
             } else {
@@ -378,7 +321,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         values.put(taskContract.TaskEntry.COLUMN_DATE, mDueDate);
         values.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, mDateLastCompleted);
         values.put(taskContract.TaskEntry.COLUMN_DESCRIPTION, descrption);
-        values.put(taskContract.TaskEntry.COLUMN_LABEL,mLabelSpinner.getSelectedItem().toString());
+        values.put(taskContract.TaskEntry.COLUMN_LABEL, mLabelSpinner.getSelectedItem().toString());
         values.put(taskContract.TaskEntry.COLUMN_HISTORY, "c");
         values.put(taskContract.TaskEntry.COLUMN_STATUS, 1);
         values.put(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD, mNumberOfRecurringDays);
@@ -405,8 +348,6 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
     }
 
-
-
     /*Displays Due date in editor UI*/
     public void displayDueDate() {
         TextView dueDateDisplayLabel = findViewById(R.id.dueDateDisplayLabel);
@@ -421,7 +362,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
         switch (colourSetting) {
             case ("DCOLOUR"):
-               // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
+                // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryD));
                 doneButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentD)));
 
@@ -429,20 +370,20 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
             case ("PCOLOUR"):
 
-               // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
+                // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryP));
                 doneButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentP)));
 
                 break;
 
             case ("TCOLOUR"):
-               // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
+                // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryT));
                 doneButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentT)));
 
                 break;
             default:
-               // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                // toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 doneButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
         }
@@ -491,33 +432,30 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
                 int RecurringColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
                 int labelColumnIndex = data.getColumnIndex(taskContract.TaskEntry.COLUMN_LABEL);
 
-                // Gte the values from the Cursor for the given column index
+                // Get the values from the Cursor for the given column index
                 String titleString = data.getString(titleColumnIndex);
                 String descriptionString = data.getString(descriptionColumnIndex);
-                Long dateLong = data.getLong(dateColumnIndex);
-                String timeString = data.getString(timeColumnIndex);
-                int reccuringDaysInt = data.getInt(RecurringColumnIndex);
+                Long mDate = data.getLong(dateColumnIndex);
+                String mTime = data.getString(timeColumnIndex);
+                int mRecurringDaysEditMode = data.getInt(RecurringColumnIndex);
                 mDateLastCompleted = data.getLong(lastCompletedColumnIndex);
 
                 //set textfields
                 mtitleEditText.setText(titleString);
                 mDescriptionEditText.setText(descriptionString);
-                mDate = dateLong;
-                mTime = timeString;
+
                 mLabel = data.getString(labelColumnIndex);
 
-
-
                 //Sets the Label spinner to the value for that row
-                for(int i =0; i<mLabelSpinner.getCount();i++){
-                    if(mLabelSpinner.getItemAtPosition(i).toString().equals(mLabel)){
+                for (int i = 0; i < mLabelSpinner.getCount(); i++) {
+                    if (mLabelSpinner.getItemAtPosition(i).toString().equals(mLabel)) {
                         mLabelSpinner.setSelection(i);
                     }
                 }
 
 
-                mRecurringDaysEditMode = reccuringDaysInt;
                 displayDueDate();
+
                 switch (mRecurringDaysEditMode) {
                     case (1):
                         mRecurringSpinner.setSelection(0);
@@ -547,7 +485,10 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
     }
 
-    public void goBack(View view){
+    /**
+     * Called when the back button is pressed
+     */
+    public void goBack(View view) {
         finish();
 
     }

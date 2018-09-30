@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_insert"
-        android:title="insert"
+        android:title="@string/insert"
         android:icon="@drawable/ic_done_white_24dp"
         app:showAsAction="always" />
 

@@ -44,12 +44,10 @@ import java.util.Calendar;
 
 /**
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
- *
+ * <p>
  * A {@link Fragment} subclass for the Fixed-task fragment of the app
  * that implements the {@link LoaderManager] interface to pass fixed task data to the a cursor
  * adaptor for the fragment's listview.
- *
- *
  */
 public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -58,35 +56,26 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
 
     private android.support.design.widget.FloatingActionButton mFabFixedTask;
-
-
-
     private taskDBHelper mDbHelper;
-
     /*ID of list item clicked*/
     private long item_iD;
-
     private Toolbar bottomBar;
-
     private boolean toolBarShown;
-
     private int lastClickedPostion;
-
     private long lastClickedID;
-
     private String labelSQL;
-
     private String label;
-
     private ImageView editButtonToolBar;
     private ImageView doneButtonToolBar;
     private ImageView deleteButtonToolBar;
 
-
-
     public FixedTaskTimeLine() {
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,31 +84,20 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         //inflates the XML layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_fixed_task_timeline, container, false);
 
-
         //get label filter selected from the navigation bar
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        label = preferences.getString("label","All");
+        label = preferences.getString("label", "All");
 
-        if (!(label.equals("All"))){
-            labelSQL = "AND label = " + "'"+ label+"'";
-            //show delete icon
-            //delete icon open up dialog asking if you're sure you want to delete label
-            //deletes label from preferences, removes label field from tasks in table
-            //changes labelSQL to "" and reloads loader
-        }
-        else{
+        if (!(label.equals("All"))) {
+            labelSQL = "AND label = " + "'" + label + "'";
+
+        } else {
             labelSQL = "";
-            //hide delete icon
         }
-
 
         mDbHelper = new taskDBHelper(getActivity());
-
         mFabFixedTask = rootView.findViewById(R.id.fixedFab);
         colorSwitch();
-
-
-       // mFabFixedTask.setBac
 
         mFabFixedTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,9 +109,9 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         });
 
         // Find the ListView which will be populated with the tasks data
-        final ListView timeLineListView = (ListView) rootView.findViewById(R.id.timelineListView);
+        final ListView timeLineListView = rootView.findViewById(R.id.timelineListView);
 
-        // Find and set empty view on the ListView, so that it only shows a helpful message when the list has 0 items.
+        //Find and set empty view on the ListView, so that it only shows a helpful message when the list has 0 items.
         View emptyView = rootView.findViewById(R.id.empty_view);
         timeLineListView.setEmptyView(emptyView);
 
@@ -200,7 +178,7 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         /*START OF TOOLBAR BUTTONS*/
 
-        /**EDITING BUTTON -
+        /*EDITING BUTTON -
          * gets the URI for the selected list item, and sends it to the editor activity for processing
          */
         editButtonToolBar.setOnClickListener(new View.OnClickListener() {
@@ -223,7 +201,7 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         });
 
 
-        /** DONE BUTTON -
+        /*DONE BUTTON -
          * When the done button (tick) on the toolbar has been selected, the app updates
          * the date for that task based on the recurring period. Or if it doesn't have one it simply deletes that task
          */
@@ -235,17 +213,16 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 //would be "content.example.android.flexitask/task" + "3" (the ID)
                 Uri currentTaskUri = ContentUris.withAppendedId(taskContract.TaskEntry.CONTENT_URI, item_iD);
 
-                Cursor cursorc = getActivity().getContentResolver().query(currentTaskUri,null,null,null,null,null);
+                Cursor cursorc = getActivity().getContentResolver().query(currentTaskUri, null, null, null, null, null);
                 SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
 
 
                 //Creates a raw SQL statment to retrieve the recurring number and due date for the selected task
 
-                if (cursorc.moveToFirst()) {
+                if (cursorc != null && cursorc.moveToFirst()) {
                     int recurringColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
                     int dateColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_DATE);
-                    int  reminderUnitIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT);
+                    int reminderUnitIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT);
                     int reminderBeforeIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_REMINDER_UNIT_BEFORE);
                     int titleColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_TASK_TITLE);
 
@@ -261,8 +238,8 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                     ContentValues cvHistory = new ContentValues();
                     String title = cursorc.getString(titleColumnIndex);
                     cvHistory.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, title);
-                    cvHistory.put(taskContract.TaskEntry.COLUMN_DESCRIPTION,"S");
-                    cvHistory.put(taskContract.TaskEntry.COLUMN_TYPE_TASK,taskContract.TaskEntry.TYPE_FIXED);
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_DESCRIPTION, "S");
+                    cvHistory.put(taskContract.TaskEntry.COLUMN_TYPE_TASK, taskContract.TaskEntry.TYPE_FIXED);
 
                     cvHistory.put(taskContract.TaskEntry.COLUMN_LAST_COMPLETED, String.valueOf(todayDate));
                     cvHistory.put(taskContract.TaskEntry.COLUMN_STATUS, String.valueOf(0));
@@ -276,8 +253,8 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
                         Calendar c = Calendar.getInstance();
 
-                        getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
-                        getActivity().getContentResolver().delete(currentTaskUri,null,null);
+                        getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI, cvHistory);
+                        getActivity().getContentResolver().delete(currentTaskUri, null, null);
                         cancelAlarm();
 
                     }
@@ -293,24 +270,25 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                         cv.put(taskContract.TaskEntry.COLUMN_DATE, dateLong);
 
                         //update task with new due date
-                        getActivity().getContentResolver().update(currentTaskUri,cv,null,null);
-                        getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
+                        getActivity().getContentResolver().update(currentTaskUri, cv, null, null);
+                        getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI, cvHistory);
 
 
-                        setReminder(title,dateLong,mReminderUnit,mReminderBefore);
+                        //set new reminder
+                        setReminder(title, dateLong, mReminderUnit, mReminderBefore);
 
                     } else {
                         // if task is overdue, then find the next due date for the task that is bigger than today's date
                         while (todayDate > dateLong) {
-                            //Log.v("CatalogActivity", dateLong + " rows deleted from the database");
+
                             dateLong += recurringNumber * 86400000L;
                             ContentValues cv = new ContentValues();
                             cv.put(taskContract.TaskEntry.COLUMN_TASK_TITLE, mtitle);
                             cv.put(taskContract.TaskEntry.COLUMN_DATE, dateLong);
-                            getActivity().getContentResolver().update(currentTaskUri,cv,null,null);
-                            getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI,cvHistory);
+                            getActivity().getContentResolver().update(currentTaskUri, cv, null, null);
+                            getActivity().getContentResolver().insert(taskContract.TaskEntry.HISTORY_URI, cvHistory);
                         }
-                        setReminder(title,dateLong,mReminderUnit,mReminderBefore);
+                        setReminder(title, dateLong, mReminderUnit, mReminderBefore);
                     }
                 }
 
@@ -318,13 +296,13 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 int fixedCount = preferences.getInt("fixedCount", 0);
                 SharedPreferences.Editor editor = preferences.edit();
                 fixedCount++;
-                editor.putInt("fixedCount",fixedCount);
+                editor.putInt("fixedCount", fixedCount);
                 editor.apply();
 
                 long weeklygoalCount = preferences.getLong("weekTasks", 0);
                 SharedPreferences.Editor editor2 = preferences.edit();
                 weeklygoalCount++;
-                editor2.putLong("weekTasks",weeklygoalCount);
+                editor2.putLong("weekTasks", weeklygoalCount);
                 editor2.apply();
 
                 //reset loader to show new changes
@@ -354,7 +332,7 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         /*END OF TOOLBAR BUTTONS*/
 
-        //when this fragment is first created, it will initalise the loader, which calls the OnCreate
+        //when this fragment is first created, it will initialise the loader, which calls the OnCreate
         // loader method which in turn retrieves data from the database
         getLoaderManager().initLoader(TASKLOADER, null, this);
 
@@ -364,7 +342,15 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
     }
 
-    private void setReminder(String taskTitle, long date, String reminderUnit, String reminderBefore){
+    /**
+     * Sets the reminder for fixed task
+     *
+     * @param reminderUnit   amount
+     * @param reminderBefore ie: weekly, daily
+     * @param taskTitle      of the task to set alarm for
+     * @param date           of the task
+     */
+    private void setReminder(String taskTitle, long date, String reminderUnit, String reminderBefore) {
 
         AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
 
@@ -376,7 +362,6 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
             intent.putExtra("title", taskTitle);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) item_iD, intent, 0);
-
 
             Calendar reminderCalander = Calendar.getInstance();
             reminderCalander.setTimeInMillis(date);
@@ -400,12 +385,10 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    private void cancelAlarm(){
+    private void cancelAlarm() {
 
         AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
-        //cancel alarm
         Intent i = new Intent(getContext(), AlertReceiverReminder.class);
-        // Extras aren't used to find the PendingIntent
         PendingIntent pi = PendingIntent.getBroadcast(getContext(), (int) item_iD, i,
                 PendingIntent.FLAG_NO_CREATE); // find the old PendingIntent
         if (pi != null) {
@@ -423,19 +406,14 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         switch (colourSetting) {
             case ("DCOLOUR"):
                 mFabFixedTask.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentD)));
-
                 break;
 
             case ("PCOLOUR"):
-
-
                 mFabFixedTask.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentP)));
-
                 break;
 
             case ("TCOLOUR"):
                 mFabFixedTask.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentT)));
-
                 break;
             default:
                 mFabFixedTask.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
@@ -443,23 +421,13 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
     }
 
     /**
-     * Method for deleting all the tasks UI. Calls the content resolver, which
-     * matches the URI with the contentProvider interface (TaskProvider) that preforms the delete method
-     * on the database
-     */
-    public void deleteAllTasks() {
-        getActivity().getContentResolver().delete(taskContract.TaskEntry.CONTENT_URI, null, null);
-    }
-
-
-    /**
-     * Method for reseting UI. Sets title back to the name of the app, and hides
+     * Method for resetting UI. Sets title back to the name of the app, and hides
      * the tool bar and shows the floatingActionButton
      */
     public void resetUI() {
-        if(label.equals("")){
+        if (label.equals("")) {
             getActivity().setTitle("Tasks");
-        }else{
+        } else {
             getActivity().setTitle(label);
         }
         Animation fabUp = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
@@ -489,16 +457,14 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
     }
 
 
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.timeline_menu, menu);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        label = preferences.getString("label","All");
-        if(label.equals("All")) {
+        label = preferences.getString("label", "All");
+        if (label.equals("All")) {
             menu.removeItem(menu.findItem(R.id.deleteLabel).getItemId());
         }
     }
@@ -522,10 +488,11 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         return super.onOptionsItemSelected(item);
     }
 
-    public void deleteLabel(){
+    /*Deletes label from database*/
+    public void deleteLabel() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("label","All");
+        editor.putString("label", "All");
         labelSQL = "";
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -536,14 +503,13 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
         db.close();
         resetUI();
         notifyMainAcitivty();
-
     }
 
 
+    /*Notifies the navigation bar that a label has been deleted*/
     private void notifyMainAcitivty() {
         Log.d("sender", "Broadcasting message");
         Intent intent = new Intent("labeldelete");
-        // You can also include some extra data.
         intent.putExtra("labelToDelete", label);
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
     }
@@ -577,7 +543,7 @@ public class FixedTaskTimeLine extends Fragment implements LoaderManager.LoaderC
                 taskContract.TaskEntry.COLUMN_STATUS,
                 taskContract.TaskEntry.COLUMN_RECCURING_PERIOD};
 
-        String WHERE = "task_type='0' AND status='1'"+labelSQL;
+        String WHERE = "task_type='0' AND status='1'" + labelSQL;
 
         // Perform a query on the tasks table, connects to contentResolver which matches the URI
         //with the appropriate content provider(Task Provider)

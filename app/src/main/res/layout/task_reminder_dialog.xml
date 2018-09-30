@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="16dp"
-    android:orientation="vertical">
-
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
 
     <EditText
         android:id="@+id/editReminderUnits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/units"
         android:inputType="number"
-        android:textColor="@color/colorPrimary"
-        android:hint="units"/>
+        android:textColor="@color/colorPrimary" />
 
     <RadioGroup
         android:id="@+id/unitsBeforeRadioGroup"
@@ -20,60 +20,64 @@
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:clickable="true"
-            android:focusable="true"
             android:id="@+id/minsBefore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@null"
+            android:clickable="true"
             android:drawableEnd="@drawable/unit_selector"
-            android:paddingLeft="8dp"
-            android:text="Minutes before"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/minutes_before"
             android:textColor="@drawable/radio_button_text_color_selector"
-            android:textSize="18dp"
-            android:fontFamily="sans-serif-medium"/>
+            android:textSize="18sp" />
 
         <RadioButton
-            android:clickable="true"
-            android:focusable="true"
             android:id="@+id/hoursBefore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@null"
+            android:clickable="true"
             android:drawableEnd="@drawable/unit_selector"
-            android:paddingLeft="8dp"
-            android:text="Hours before"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/hours_before"
             android:textColor="@drawable/radio_button_text_color_selector"
-            android:textSize="18dp"
-            android:fontFamily="sans-serif-medium"/>
+            android:textSize="18sp" />
 
         <RadioButton
-            android:clickable="true"
-            android:focusable="true"
             android:id="@+id/daysBefore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@null"
+            android:clickable="true"
             android:drawableEnd="@drawable/unit_selector"
-            android:paddingLeft="8dp"
-            android:text="Days before"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/days_before"
             android:textColor="@drawable/radio_button_text_color_selector"
-            android:textSize="18dp"
-            android:fontFamily="sans-serif-medium"/>
+            android:textSize="18sp" />
 
         <RadioButton
-            android:clickable="true"
-            android:focusable="true"
             android:id="@+id/weeksBefore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@null"
+            android:clickable="true"
             android:drawableEnd="@drawable/unit_selector"
-            android:paddingLeft="8dp"
-            android:text="Weeks before"
-            android:textColor="@drawable/radio_button_text_color_selector"
-            android:textSize="18dp"
+            android:focusable="true"
             android:fontFamily="sans-serif-medium"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/weeks_before"
+            android:textColor="@drawable/radio_button_text_color_selector"
+            android:textSize="18sp"
 
             />
 

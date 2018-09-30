@@ -1,109 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-<LinearLayout
-    android:id="@+id/buttonScrollView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:orientation="horizontal">
-
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:scrollbars="none"
-    android:id="@+id/scrollView1"
+    <LinearLayout
+        android:id="@+id/buttonScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <HorizontalScrollView
-        android:scrollbars="none"
-        android:layout_marginBottom="8dp"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_marginTop="8dp"
-
-
-            android:layout_marginLeft="8dp"
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollView1"
             android:layout_width="fill_parent"
-            android:id="@+id/linearLayout1"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal"
-            android:layout_height="fill_parent">
+            android:scrollbars="none"
+            tools:ignore="UselessParent">
 
-            <RadioGroup
-                android:id="@+id/btnTimeGroup"
-                android:layout_width="match_parent"
-                android:contentDescription="Time Filters"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content" >
-            <RadioButton
-
-                android:id="@+id/btnAnyTime"
-                android:layout_height="40dp"
-                android:layout_width="110dp"
-                android:textAlignment="center"
-                android:button="@null"
+            <HorizontalScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:contentDescription="Anytime"
-                android:text="Anytime"
-                android:background="@drawable/oval_shape"
-                 />
-            <RadioButton
-                android:id="@+id/btnLastDay"
-                android:layout_height="40dp"
-                android:layout_width="110dp"
-                android:textAlignment="center"
-                android:contentDescription="Today"
-                android:button="@null"
-                android:text="Today"
-                android:background="@drawable/oval_shape"
+                android:scrollbars="none">
 
-                 />
-            <RadioButton
-                android:id="@+id/btnLastWeek"
-                android:layout_height="40dp"
-                android:layout_width="110dp"
-                android:textAlignment="center"
-                android:button="@null"
-                android:contentDescription="Past Week"
-                android:text="Past Week"
-                android:background="@drawable/oval_shape"
+                <LinearLayout
+                    android:id="@+id/linearLayout1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
-               />
-            <RadioButton
-                android:id="@+id/btnLastMonth"
-                android:layout_height="40dp"
-                android:layout_width="110dp"
-                android:textAlignment="center"
-                android:button="@null"
-                android:text="Past Month"
-                android:contentDescription="Past Month"
-                android:background="@drawable/oval_shape"
+                    <RadioGroup
+                        android:id="@+id/btnTimeGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/time_filters"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+
+                            android:id="@+id/btnAnyTime"
+                            android:layout_width="110dp"
+                            android:layout_height="40dp"
+                            android:layout_marginBottom="8dp"
+                            android:background="@drawable/oval_shape"
+                            android:button="@null"
+                            android:contentDescription="@string/anytime"
+                            android:text="@string/anytime"
+                            android:textAlignment="center" />
+
+                        <RadioButton
+                            android:id="@+id/btnLastDay"
+                            android:layout_width="110dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/oval_shape"
+                            android:button="@null"
+                            android:contentDescription="@string/today"
+                            android:text="@string/today"
+                            android:textAlignment="center"
+
+                            />
+
+                        <RadioButton
+                            android:id="@+id/btnLastWeek"
+                            android:layout_width="110dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/oval_shape"
+                            android:button="@null"
+                            android:contentDescription="@string/past_week"
+                            android:text="@string/past_week"
+                            android:textAlignment="center"
+
+                            />
+
+                        <RadioButton
+                            android:id="@+id/btnLastMonth"
+                            android:layout_width="110dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/oval_shape"
+                            android:button="@null"
+                            android:contentDescription="@string/past_month"
+                            android:text="@string/past_month"
+                            android:textAlignment="center"
 
 
-                />
-            <RadioButton
-                android:id="@+id/btnLastYear"
-                android:text="Past Year"
-                android:contentDescription="Past Year"
-                android:layout_height="40dp"
-                android:layout_width="110dp"
-                android:textAlignment="center"
-                android:button="@null"
-                android:background="@drawable/oval_shape"
-                />
+                            />
+
+                        <RadioButton
+                            android:id="@+id/btnLastYear"
+                            android:layout_width="110dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/oval_shape"
+                            android:button="@null"
+                            android:contentDescription="@string/past_year"
+                            android:text="@string/past_year"
+                            android:textAlignment="center" />
 
 
-            </RadioGroup>
+                    </RadioGroup>
 
-        </LinearLayout>
-    </HorizontalScrollView>
-</ScrollView>
+                </LinearLayout>
+            </HorizontalScrollView>
+        </ScrollView>
 
-</LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonScrollView2"
@@ -113,66 +118,70 @@
         android:orientation="horizontal">
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal"
             android:scrollbars="none"
-            android:layout_width="fill_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_height="fill_parent">
+            tools:ignore="UselessParent">
+
             <HorizontalScrollView
-                android:scrollbars="none"
-                android:layout_marginBottom="8dp"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:scrollbars="none">
 
                 <LinearLayout
 
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_width="fill_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="fill_parent">
+                    android:layout_marginStart="8dp"
+                    android:orientation="horizontal">
 
                     <RadioGroup
                         android:id="@+id/btnTaskGroup"
                         android:layout_width="match_parent"
-                        android:orientation="horizontal"
-                        android:contentDescription="Task Type Buttons"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/task_type_buttons"
+                        android:orientation="horizontal">
 
-                    <RadioButton
-                        android:layout_marginBottom="2dp"
-                        android:id="@+id/btnAllTasks"
-                        android:layout_height="40dp"
-                        android:layout_width="110dp"
-                        android:textAlignment="center"
-                        android:button="@null"
-                        android:background="@drawable/oval_shape"
-                        android:contentDescription="All tasks"
-                        android:text="All Tasks"
+                        <RadioButton
+                            android:id="@+id/btnAllTasks"
+                            android:layout_width="110dp"
+                            android:layout_height="40dp"
+                            android:layout_marginBottom="2dp"
+                            android:background="@drawable/oval_shape"
+                            android:button="@null"
+                            android:contentDescription="@string/all_tasks"
+                            android:text="@string/all_tasks"
+                            android:textAlignment="center"
 
-                        />
-                    <RadioButton
-                        android:id="@+id/btnFixedTasks"
-                        android:layout_height="40dp"
-                        android:layout_width="110dp"
-                        android:textAlignment="center"
-                        android:button="@null"
-                        android:background="@drawable/oval_shape"
-                        android:contentDescription="Fixed Tasks"
-                        android:text="Fixed Tasks"
+                            />
 
-                        />
-                    <RadioButton
-                        android:id="@+id/btnFlexiTasks"
-                        android:textAlignment="center"
-                        android:button="@null"
-                        android:layout_height="40dp"
-                        android:layout_width="110dp"
-                        android:background="@drawable/oval_shape"
-                        android:contentDescription="FlexiTasks"
-                        android:text="FlexiTasks"
+                        <RadioButton
+                            android:id="@+id/btnFixedTasks"
+                            android:layout_width="110dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/oval_shape"
+                            android:button="@null"
+                            android:contentDescription="@string/fixed_tasks"
+                            android:text="@string/fixed_tasks"
+                            android:textAlignment="center"
 
-                        />
+                            />
+
+                        <RadioButton
+                            android:id="@+id/btnFlexiTasks"
+                            android:layout_width="110dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/oval_shape"
+                            android:button="@null"
+                            android:contentDescription="@string/fixed_tasks"
+                            android:text="@string/fixed_tasks"
+                            android:textAlignment="center"
+
+                            />
                     </RadioGroup>
 
                 </LinearLayout>
@@ -185,40 +194,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
-            android:paddingLeft="8dp"
-            android:textStyle="bold"
-            android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"/>
+            android:layout_alignParentStart="true"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/title"
+            android:textStyle="bold" />
+
         <TextView
-            android:textStyle="bold"
-            android:paddingRight="8dp"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date Completed"/>
+            android:layout_alignParentEnd="true"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/date_completed"
+            android:textStyle="bold"
+            tools:ignore="RelativeOverlap" />
 
 
     </RelativeLayout>
 
 
-<LinearLayout
-    android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="wrap_content"
 
-    android:layout_height="wrap_content">
+        android:layout_height="wrap_content">
 
 
-    <ListView
-        android:id="@+id/historyListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:choiceMode="singleChoice"
-        android:clipToPadding="false"
-        android:paddingBottom="56dp"
-        android:scrollbarStyle="outsideOverlay" />
-</LinearLayout>
+        <ListView
+            android:id="@+id/historyListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice"
+            android:clipToPadding="false"
+            android:paddingBottom="56dp"
+            android:scrollbarStyle="outsideOverlay" />
+    </LinearLayout>
 
 
 </LinearLayout>

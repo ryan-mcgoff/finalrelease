@@ -27,11 +27,10 @@ import java.util.Calendar;
 
 /**
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
- *
+ * <p>
  * A {@link Fragment} subclass for the history fragment of the app
  * that implements the {@link LoaderManager] interface to retrieve deactived task data to the a cursor
  * adaptor for the fragment's listview. This is based on what filters the user has selected (chosen via buttons)
- *
  */
 public class TaskHistoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -56,7 +55,7 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         super.onCreateView(inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
 
         rootView = inflater.inflate(R.layout.fragment_task_history, container, false);
         //checks colour preferences set by the user and makes appropriate changes
@@ -75,7 +74,7 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
 
         mDbHelper = new taskDBHelper(getActivity());
 
-        // Find the ListView which will be populated with the tasks data
+        //Find the ListView which will be populated with the tasks data
         final ListView timeLineListView = (ListView) rootView.findViewById(R.id.historyListView);
 
         mTaskCursorAdaptor = new TaskHistoryAdaptor(getActivity(), null);
@@ -91,7 +90,7 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
         timeButtonGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.btnAnyTime:
 
                         timeBtnSelectDeselect(checkedId);
@@ -106,17 +105,17 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
                         break;
                     case R.id.btnLastWeek:
                         timeBtnSelectDeselect(checkedId);
-                        dateFilter = todayDate - (86400000L*7);
+                        dateFilter = todayDate - (86400000L * 7);
                         getLoaderManager().restartLoader(TASKLOADER, null, TaskHistoryFragment.this);
                         break;
                     case R.id.btnLastMonth:
                         timeBtnSelectDeselect(checkedId);
-                        dateFilter = todayDate - (86400000L*31);
+                        dateFilter = todayDate - (86400000L * 31);
                         getLoaderManager().restartLoader(TASKLOADER, null, TaskHistoryFragment.this);
                         break;
                     case R.id.btnLastYear:
                         timeBtnSelectDeselect(checkedId);
-                        dateFilter = todayDate - (86400000L*365);
+                        dateFilter = todayDate - (86400000L * 365);
                         getLoaderManager().restartLoader(TASKLOADER, null, TaskHistoryFragment.this);
                         break;
                 }
@@ -127,7 +126,7 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
         taskButtonGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.btnAllTasks:
                         taskBtnSelectDeselect(checkedId);
                         taskFilter = taskContract.TaskEntry.TYPE_ALL;
@@ -206,13 +205,14 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
         }
     }
 
-    private void timeBtnSelectDeselect(int checkID){
+    private void timeBtnSelectDeselect(int checkID) {
         timeBtnDeselect = timeBtnSelected;
         timeBtnSelected = rootView.findViewById(checkID);
         timeBtnDeselect.setBackgroundResource(R.drawable.oval_shape);
         timeBtnSelected.setBackgroundResource(selectedDrawableID);
     }
-    private void taskBtnSelectDeselect(int checkID){
+
+    private void taskBtnSelectDeselect(int checkID) {
         taskBtnDeselect = taskBtnSelected;
         taskBtnSelected = rootView.findViewById(checkID);
         taskBtnDeselect.setBackgroundResource(R.drawable.oval_shape);
@@ -252,19 +252,17 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
 
         String WHERE = "";
 
-        if(dateFilter!=todayDate){
+        if (dateFilter != todayDate) {
             Log.v("Date", "date FIlter not equal to today");
-            WHERE= taskContract.TaskEntry.COLUMN_LAST_COMPLETED + ">"+String.valueOf(dateFilter);
-            if(taskFilter!=taskContract.TaskEntry.TYPE_ALL) {
+            WHERE = taskContract.TaskEntry.COLUMN_LAST_COMPLETED + ">" + String.valueOf(dateFilter);
+            if (taskFilter != taskContract.TaskEntry.TYPE_ALL) {
                 WHERE += " AND task_type = ' " + String.valueOf(taskFilter) + "'";
             }
-        }
-        else{
-            if(taskFilter!=taskContract.TaskEntry.TYPE_ALL) {
+        } else {
+            if (taskFilter != taskContract.TaskEntry.TYPE_ALL) {
                 WHERE += " task_type = ' " + String.valueOf(taskFilter) + "'";
             }
         }
-
 
 
         return new CursorLoader(getActivity(),

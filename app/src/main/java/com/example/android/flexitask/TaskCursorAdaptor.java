@@ -23,11 +23,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
- *
+ * <p>
  * A Cursor Adaptor  lets Android manage resources more efficiently
  * by retrieving and releasing row and column values when the user scrolls, rather than loading everything into memory.
  * This is a custom extension of CursorAdaptor for tasks
- *
  */
 public class TaskCursorAdaptor extends CursorAdapter {
 
@@ -42,7 +41,7 @@ public class TaskCursorAdaptor extends CursorAdapter {
      * @param context app context
      * @param c       The cursor that provides the data.
      */
-    public TaskCursorAdaptor(Context context, Cursor c) {
+    TaskCursorAdaptor(Context context, Cursor c) {
 
         super(context, c, 0 /* flags */);
 
@@ -93,7 +92,6 @@ public class TaskCursorAdaptor extends CursorAdapter {
                 medPriority = R.color.yellowPriority;
                 highPriority = R.color.redPriority;
         }
-
 
 
         return LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);
@@ -162,11 +160,10 @@ public class TaskCursorAdaptor extends CursorAdapter {
         //checks how many days until a given task is due
         String daysUntilDue = daysUntilDue(dateLong);
 
-        /**set views for {@link com.example.android.flexitask#listItem} with retrieved text*/
+        /*set views for {@link com.example.android.flexitask#listItem} with retrieved text*/
         dueDateView.setText(String.valueOf(daysUntilDue));
         titleTextView.setText(titleString);
         descriptionTextView.setText(descriptionString);
-
 
 
     }
@@ -188,7 +185,7 @@ public class TaskCursorAdaptor extends CursorAdapter {
      * @param lastCompletedLong the date the flexitask was last completed or created (in milliseconds)
      * @param recurringPeriod   the tasks recurring period (ie: daily, yearly)
      */
-    public void priorityChecker(View priorityLine, String taskTitle, long todayDate, long lastCompletedLong, int recurringPeriod) {
+    private void priorityChecker(View priorityLine, String taskTitle, long todayDate, long lastCompletedLong, int recurringPeriod) {
 
 
         long daysSinceTaskLastCompleted = ((todayDate - lastCompletedLong) / 86400000L) + 1;
@@ -197,7 +194,6 @@ public class TaskCursorAdaptor extends CursorAdapter {
 
 
         //log for testing purposes
-
 
 
         //if 75% until due, set green priority
@@ -231,7 +227,7 @@ public class TaskCursorAdaptor extends CursorAdapter {
      * @return dateMessage an English representation of how long until the task is due / how overdue it is
      */
 
-    public String daysUntilDue(long dateLong) {
+    private String daysUntilDue(long dateLong) {
         long todayDate = Calendar.getInstance().getTimeInMillis();
         long dueDate = dateLong;
 

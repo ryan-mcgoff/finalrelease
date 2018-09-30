@@ -14,9 +14,10 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 /**
- * Created by rymcg on 30/09/2018.
+ * Created by Ryan McGoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
+ * <p>
+ * Creates a simple contextual help dialog based on which frgament the user is current on
  */
-
 public class HelpDialog extends AppCompatDialogFragment {
 
     public static final String TITLE_KEY = "title";
@@ -26,7 +27,7 @@ public class HelpDialog extends AppCompatDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.help_dialog,null);
+        final View view = inflater.inflate(R.layout.help_dialog, null);
 
         Bundle args = getArguments();
         String title = args.getString(TITLE_KEY, "help error");
@@ -42,7 +43,7 @@ public class HelpDialog extends AppCompatDialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 dismiss();
             }
-            });
+        });
 
         return builder.create();
     }
