@@ -8,8 +8,14 @@
         app:showAsAction="never" />
 
     <item
+        android:title = "Clear History"
+        android:id="@+id/clearHistory"
+        />
+
+    <item
         android:title="@string/delete_label"
         android:id="@+id/deleteLabel"
         android:src="@drawable/ic_delete_white_24dp"/>
+
 
 </menu>

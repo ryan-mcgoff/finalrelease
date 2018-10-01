@@ -14,9 +14,9 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 
 /**
- * Created by rymcg on 6/09/2018.
+ *Created by Ryan Mcgoff (4086944), Jerry Kumar (3821971), Jaydin Mcmullan (9702973)
+ * Dialog logic for TaskReminder dialog.
  */
-
 public class TaskReminderDialog extends AppCompatDialogFragment {
 
     private EditText editUnitReminder;

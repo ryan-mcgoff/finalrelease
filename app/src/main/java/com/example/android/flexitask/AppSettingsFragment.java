@@ -63,6 +63,7 @@ public class AppSettingsFragment extends PreferenceFragmentCompat {
 
         inflater.inflate(R.menu.timeline_menu, menu);
         menu.removeItem(menu.findItem(R.id.deleteLabel).getItemId());
+        menu.removeItem(menu.findItem(R.id.clearHistory).getItemId());
     }
 
     /**

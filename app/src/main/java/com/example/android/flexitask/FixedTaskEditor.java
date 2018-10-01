@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -280,6 +281,9 @@ public class FixedTaskEditor extends AppCompatActivity implements LoaderManager.
             TextView timeLabel = (TextView) findViewById(R.id.timeDisplayLabel);
             mTime = convertTimeToString(currentHour, currentMin);
             timeLabel.setText(mTime);
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            mLabel = preferences.getString("label", "All");
 
             //Sets the Label spinner to the value for that row
             for (int i = 0; i < mLabelSpinner.getCount(); i++) {

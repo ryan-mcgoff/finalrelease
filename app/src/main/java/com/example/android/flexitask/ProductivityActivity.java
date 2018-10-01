@@ -24,6 +24,7 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
     private Toolbar toolbar;
     private WaveLoadingView waveLoadingView;
     private Button editButton;
+    private TextView goalDisplay;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         totalCount.setText(String.valueOf(flexiCountInt + fixedCountInt));
 
         //get goal value and week completed tasks value
-        TextView goalDisplay = findViewById(R.id.goalDisplayLabel);
+        goalDisplay = findViewById(R.id.goalDisplayLabel);
         long weekTasks = preferences.getLong("weekTasks", 0);
         long goal = preferences.getInt("goal", 5);
 
@@ -135,7 +136,39 @@ public class ProductivityActivity extends AppCompatActivity implements EditWeekl
         //set Goal
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor preferencesEdit = preferences.edit().putInt("goal", goal);
+        TextView flexiCount = findViewById(R.id.flexiCount);
+        TextView fixedCount = findViewById(R.id.fixedCoCount);
+        TextView totalCount = findViewById(R.id.totalCount);
+        int flexiCountInt = preferences.getInt("flexiCount", 0);
+        int fixedCountInt = preferences.getInt("fixedCount", 0);
+        flexiCount.setText(String.valueOf(flexiCountInt));
+        fixedCount.setText(String.valueOf(fixedCountInt));
+        totalCount.setText(String.valueOf(flexiCountInt + fixedCountInt));
+
         preferencesEdit.apply();
+        long weekTasks = preferences.getLong("weekTasks", 0);
+
+
+        String goalDisplayMessage = String.valueOf(weekTasks) + "/" + String.valueOf(goal) + " Tasks";
+
+        int percentage;
+
+        if (goal != 0) {
+            percentage = (int) ((weekTasks * 100 / goal));
+        } else {
+            percentage = 0;
+        }
+
+        totalCount.setText(String.valueOf(flexiCountInt + fixedCountInt));
+
+        if (percentage > 100) {
+            waveLoadingView.setProgressValue(100);
+
+        } else {
+            waveLoadingView.setProgressValue(percentage);
+        }
+
+        goalDisplay.setText(goalDisplayMessage);
 
 
     }

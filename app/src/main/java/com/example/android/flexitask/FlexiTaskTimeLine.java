@@ -410,6 +410,7 @@ public class FlexiTaskTimeLine extends Fragment implements LoaderManager.LoaderC
 
         inflater.inflate(R.menu.timeline_menu, menu);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        menu.removeItem(menu.findItem(R.id.clearHistory).getItemId());
         label = preferences.getString("label", "All");
         if (label.equals("All")) {
             menu.removeItem(menu.findItem(R.id.deleteLabel).getItemId());

@@ -245,10 +245,12 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         String title = "Tasks";
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.nav_draw);
         Log.v(String.valueOf(viewId), "");
-        int lastItemID = itemID;
-        MenuItem lastItem = subMenu.findItem(lastItemID);
-        if (lastItem != null) {
-            lastItem.setChecked(false);
+        if(subMenu!=null) {
+            int lastItemID = itemID;
+            MenuItem lastItem = subMenu.findItem(lastItemID);
+            if (lastItem != null) {
+                lastItem.setChecked(false);
+            }
         }
         switch (viewId) {
             case R.id.nav_tasks:

@@ -1,6 +1,7 @@
 package com.example.android.flexitask;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -174,6 +175,13 @@ public class TaskHistoryFragment extends Fragment implements LoaderManager.Loade
                 bd.setArguments(b);
                 bd.show(getFragmentManager(), "help fragment");
                 return true;
+
+            case R.id.clearHistory:
+                taskDBHelper mDbHelper = new taskDBHelper(getContext());
+                SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                db.execSQL("delete from "+ taskContract.TaskEntry.History_TABLE_NAME);
+                db.close();
+                getLoaderManager().restartLoader(TASKLOADER, null, TaskHistoryFragment.this);
         }
         return super.onOptionsItemSelected(item);
     }
