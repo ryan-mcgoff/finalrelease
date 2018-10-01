@@ -2,6 +2,7 @@ package com.example.android.flexitask;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.CalendarContract;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -228,12 +229,15 @@ public class TaskCursorAdaptor extends CursorAdapter {
      */
 
     private String daysUntilDue(long dateLong) {
-        long todayDate = Calendar.getInstance().getTimeInMillis();
+        Calendar todayDateC = Calendar.getInstance();
+        todayDateC.set(Calendar.HOUR_OF_DAY, 0);
+        todayDateC.set(Calendar.MINUTE, 0);
+        todayDateC.set(Calendar.SECOND, 0);
+        todayDateC.set(Calendar.MILLISECOND, 0);
+        long todayDate = todayDateC.getTimeInMillis();
         long dueDate = dateLong;
 
-
         String datemessage;
-
 
         if (dueDate >= todayDate) {
             long differenceMillisecond = dueDate - todayDate + 1;
@@ -250,7 +254,7 @@ public class TaskCursorAdaptor extends CursorAdapter {
         } else {
 
             long differenceMillisecond = todayDate - dueDate;
-            long differenceDays = TimeUnit.MILLISECONDS.toDays(differenceMillisecond);
+            long differenceDays = TimeUnit.MILLISECONDS.toDays(differenceMillisecond)+1;
             datemessage = "Overdue by " + String.valueOf(differenceDays);
             if (differenceDays == 0) {
                 datemessage = "DUE TODAY!";

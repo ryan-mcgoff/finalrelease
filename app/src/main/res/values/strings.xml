@@ -44,7 +44,6 @@
     <string name="delete_label">Delete Label</string>
     <string name="back_button">back button</string>
     <string name="task_title">task title</string>
-    <string name="title">Title</string>
     <string name="task_description">task description</string>
     <string name="description">Description</string>
     <string name="reminder">Reminder</string>
@@ -56,20 +55,16 @@
     <string name="time">time</string>
     <string name="label_selector">label selector</string>
     <string name="label">label</string>
-    <string name="click_to_select_a_label_for_the_task">click to select a label for the task</string>
     <string name="recurring_period_selector">Recurring Period selector</string>
     <string name="recurring">Recurring</string>
     <string name="click_to_select_recurring_period">click to select recurring period</string>
-    <string name="_0">0</string>
-    <string name="days">days</string>
     <string name="title_and_description_container">title and description container</string>
     <string name="next_due_date">Next Due Date</string>
     <string name="next_due">Next Due</string>
     <string name="click_to_select_a_label_for_the_task">click to select a label for the task</string>
     <string name="every">Every</string>
-    <string name="_0">0</string>
     <string name="days">days</string>
-    <string name="it_s_a_bit_lonely_in_here">It\'s a bit lonely in here...</string>
+    <string name="it_s_a_bit_lonely_in_here">It\'s a bit lonely in here…</string>
     <string name="to_get_started_click_the_plus_symbol">To get started, click the plus symbol</string>
     <string name="toolbar">ToolBar</string>
     <string name="done_button">Done Button</string>
@@ -97,9 +92,7 @@
     <string name="edit_goal">edit goal</string>
     <string name="_3_5_tasks">3/5 Tasks</string>
     <string name="completed_flexi_tasks">completed Flexi tasks</string>
-    <string name="_0">0</string>
     <string name="completed_fixed_tasks">completed Fixed tasks</string>
-    <string name="_0">0</string>
     <string name="_0">0</string>
     <string name="completed_tasks">completed tasks</string>
     <string name="units">units</string>
@@ -107,7 +100,6 @@
     <string name="hours_before">Hours before</string>
     <string name="days_before">Days before</string>
     <string name="weeks_before">Weeks before</string>
-    <string name="action_bar">Action Bar</string>
     <string name="action_bar">Action Bar</string>
     <string name="tasksC">Tasks</string>
     <string name="history">History</string>

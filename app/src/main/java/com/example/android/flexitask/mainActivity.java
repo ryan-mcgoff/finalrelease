@@ -172,7 +172,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
             int labelNameColumnIndex = cursorc.getColumnIndex(taskContract.TaskEntry.COLUMN_LABEL_NAME);
             String labelName = cursorc.getString(labelNameColumnIndex);
 
-            subMenu.add(1, labelCount, 0, labelName);
+            subMenu.add(1, labelCount, 0, labelName).setIcon(R.drawable.ic_label_outline_black_24dp);
             labelCount++;
             subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
@@ -302,6 +302,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
 
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+
         }
 
         setTitle(title);
@@ -388,7 +389,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         db.insert(taskContract.TaskEntry.LABEL_TABLE_NAME, null, cv);
         db.close();
         Menu menu = navigationView.getMenu();
-        subMenu.add(0, labelCount, 0, newTextLabel);
+        subMenu.add(0, labelCount, 0, newTextLabel).setIcon(R.drawable.ic_label_outline_black_24dp);
         labelCount++;
         navigationView.setNavigationItemSelectedListener(this);
 

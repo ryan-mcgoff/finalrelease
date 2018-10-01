@@ -4,8 +4,10 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
@@ -66,10 +68,16 @@ public class NotificationHelperReminders extends ContextWrapper {
      */
     public NotificationCompat.Builder getChannel(String title, String message) {
 
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, mainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+
         return new NotificationCompat.Builder(getApplicationContext(), CHANNELID)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setSmallIcon(R.drawable.ic_launcher_foreground);
+                .setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.ic_stat_name);
     }
 
 }

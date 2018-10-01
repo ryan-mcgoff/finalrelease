@@ -42,7 +42,8 @@ public class AlertReceiverReminder extends BroadcastReceiver {
 
         //creates notification
         NotificationHelperReminders mNotificationHelper = new NotificationHelperReminders(context);
-        NotificationCompat.Builder nb = mNotificationHelper.getChannel("Task Reminder","Task info");
+        String title = intent.getStringExtra("title");
+        NotificationCompat.Builder nb = mNotificationHelper.getChannel("Task Reminder",title);
         mNotificationHelper.getNotificationManager().notify(notificationID,nb.build());
 
     }
