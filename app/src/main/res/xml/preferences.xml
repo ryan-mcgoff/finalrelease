@@ -13,6 +13,8 @@
         android:defaultValue="@string/color_default_value"
     />
 
+
+
     <SwitchPreference
         android:key="daily"
         android:title="Daily notification"
@@ -27,4 +29,17 @@
         android:contentDescription="Time Picker for notifications"
         android:summary="Select when you want to recieve a daily summary"/>
 
+    <Preference
+        android:key="contactDevKey"
+        android:title="Contact developer"
+        android:summary="Please report any bugs you find">
+        <intent android:action="android.intent.action.VIEW"
+            android:data="mailto:flexitaskapp@gmail.com">
+
+            <extra android:name="android.intent.extra.TEXT"
+                android:value="What can I help you with?" />
+            <extra android:name="android.intent.extra.SUBJECT"
+                android:value="Bug report for flexitask" />
+        </intent>
+    </Preference>
 </PreferenceScreen>

@@ -67,6 +67,7 @@
                     <TextView
                         android:id="@+id/textCountTaskTitle"
                         android:layout_width="wrap_content"
+                        android:text=""
                         android:layout_height="wrap_content" />
 
                     <android.support.design.widget.TextInputLayout
@@ -83,9 +84,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
+                            android:maxLength="30"
                             android:hint="@string/description"
                             android:textColor="#FFFFFF" />
+                        <TextView
+                            android:id="@+id/textCountTaskDescrp"
+                            android:layout_width="wrap_content"
+                            android:text=""
+                            android:layout_height="wrap_content" />
                     </android.support.design.widget.TextInputLayout>
+
 
                 </LinearLayout>
 
@@ -317,7 +325,6 @@
                     </LinearLayout>
 
                 </RelativeLayout>
-
 
             </LinearLayout>
 

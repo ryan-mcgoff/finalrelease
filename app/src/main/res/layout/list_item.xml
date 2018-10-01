@@ -63,7 +63,7 @@
                     android:layout_below="@+id/titleListView"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
-                    android:maxEms="15"
+                    android:maxEms="10"
                     android:maxLines="1"
                     android:padding="8dp"
                     android:text="Task description"
@@ -84,6 +84,22 @@
                         android:maxLines="1"
                         android:padding="8dp"
                         android:text="@string/due_date" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBottom="@id/descriptionListView">
+
+                    <TextView
+                        android:id="@+id/timeView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:padding="8dp"/>
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>

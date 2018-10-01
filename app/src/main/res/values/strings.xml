@@ -89,12 +89,12 @@
     <string name="life_time_fixedtasks_10">Life time FixedTasks 10</string>
     <string name="flexitask">FlexiTask</string>
     <string name="weekly_goal_0_0">Weekly goal 0/0</string>
-    <string name="edit_goal">edit goal</string>
+    <string name="edit_goal">edit weekly goal</string>
     <string name="_3_5_tasks">3/5 Tasks</string>
     <string name="completed_flexi_tasks">completed Flexi tasks</string>
     <string name="completed_fixed_tasks">completed Fixed tasks</string>
     <string name="_0">0</string>
-    <string name="completed_tasks">completed tasks</string>
+    <string name="completed_tasks">total completed tasks</string>
     <string name="units">units</string>
     <string name="minutes_before">Minutes before</string>
     <string name="hours_before">Hours before</string>

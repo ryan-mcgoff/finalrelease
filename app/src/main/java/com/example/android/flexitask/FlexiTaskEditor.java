@@ -83,6 +83,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
     private FloatingActionButton doneButton;
 
     private AppBarLayout appbar;
+    private TextView textCountDe;
 
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
@@ -121,6 +122,23 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         }
     };
 
+    private final TextWatcher mTextWatcherDescription = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            //do nothing
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            /**This sets a textCountView to the current length of the input from the editTextView*/
+            textCountDe.setText(String.valueOf(s.length()) + "/30");
+        }
+
+        public void afterTextChanged(Editable s) {
+            //do nothing
+
+        }
+    };
+
+
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
      * the view,  we change the Task boolean to true.
@@ -152,6 +170,7 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
         mCustomRecurring = (EditText) findViewById(R.id.customRecurringText);
         doneButton = (FloatingActionButton) findViewById(R.id.doneFab);
         appbar = findViewById(R.id.appbar);
+        textCountDe = findViewById(R.id.textCountTaskDescrp);
 
         colorSwitch();
 
@@ -312,6 +331,11 @@ public class FlexiTaskEditor extends AppCompatActivity implements LoaderManager.
 
         // Create database helper
         taskDBHelper mDBHelper = new taskDBHelper(this);
+
+        //remove new line
+
+        taskTitle = taskTitle.replace("\n", "");
+        descrption = descrption.replace("\n", "");
 
 
         // Create a ContentValues object where column names are the keys,

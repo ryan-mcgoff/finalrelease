@@ -245,6 +245,11 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
         String title = "Tasks";
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.nav_draw);
         Log.v(String.valueOf(viewId), "");
+        int lastItemID = itemID;
+        MenuItem lastItem = subMenu.findItem(lastItemID);
+        if (lastItem != null) {
+            lastItem.setChecked(false);
+        }
         switch (viewId) {
             case R.id.nav_tasks:
                 fragment = new TimelineFragmentsContainer();
@@ -253,6 +258,7 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
                 editor.putString("label", "All");
                 editor.apply();
                 drawer.closeDrawer(GravityCompat.START);
+
 
                 break;
             case R.id.nav_history:
@@ -271,18 +277,6 @@ public class mainActivity extends AppCompatActivity implements NavigationView.On
                 createNew.setChecked(false).setCheckable(false);
                 break;
             default:
-
-                Log.d("itemid", String.valueOf(itemID));
-
-                if (itemID != 0) {
-                    int lastItemID = itemID;
-                    Log.d("item", "rec message");
-                    MenuItem lastItem = subMenu.findItem(lastItemID);
-
-                    if (lastItem != null) {
-                        lastItem.setChecked(false);
-                    }
-                }
 
                 itemID = item.getItemId();
                 item.setChecked(true);

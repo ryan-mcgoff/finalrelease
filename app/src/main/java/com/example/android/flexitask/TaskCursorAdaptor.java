@@ -119,6 +119,7 @@ public class TaskCursorAdaptor extends CursorAdapter {
         TextView descriptionTextView = view.findViewById(R.id.descriptionListView);
         TextView dueDateView = view.findViewById(R.id.testView);
         LinearLayout priorityLine = view.findViewById(R.id.priorityMargin);
+        TextView timeView = view.findViewById(R.id.timeView);
 
         //find the column values
         int titleColumnIndex = cursor.getColumnIndex(taskContract.TaskEntry.COLUMN_TASK_TITLE);
@@ -127,6 +128,7 @@ public class TaskCursorAdaptor extends CursorAdapter {
         int taskTypeColumnIndex = cursor.getColumnIndex(taskContract.TaskEntry.COLUMN_TYPE_TASK);
         int lastCompletedIndex = cursor.getColumnIndex(taskContract.TaskEntry.COLUMN_LAST_COMPLETED);
         int recurringColumnIndex = cursor.getColumnIndex(taskContract.TaskEntry.COLUMN_RECCURING_PERIOD);
+        int timeIndex = cursor.getColumnIndex(taskContract.TaskEntry.COLUMN_TIME);
 
         //Read the values for current Tasks
         String titleString = cursor.getString(titleColumnIndex);
@@ -135,6 +137,7 @@ public class TaskCursorAdaptor extends CursorAdapter {
         int taskType = cursor.getInt(taskTypeColumnIndex);
         long lastCompletedLong = cursor.getLong(lastCompletedIndex);
         int recurringPeriod = cursor.getInt(recurringColumnIndex);
+        String timeS = cursor.getString(timeIndex);
 
         //set date values for priority checker & dueDateChecker
         long dateLong = 0;
@@ -154,7 +157,11 @@ public class TaskCursorAdaptor extends CursorAdapter {
 
         } else {
 
+           // long timeDate = cursor.getLong(dateTimeIndex);
+
             dateLong = Long.parseLong(dateString);
+            String timeSMessage = "@"+timeS;
+            timeView.setText(timeSMessage);
 
         }
 
@@ -235,13 +242,19 @@ public class TaskCursorAdaptor extends CursorAdapter {
         todayDateC.set(Calendar.SECOND, 0);
         todayDateC.set(Calendar.MILLISECOND, 0);
         long todayDate = todayDateC.getTimeInMillis();
-        long dueDate = dateLong;
+        Calendar dueDateC = Calendar.getInstance();
+        dueDateC.setTimeInMillis(dateLong);
+        dueDateC.set(Calendar.HOUR_OF_DAY, 0);
+        dueDateC.set(Calendar.MINUTE, 0);
+        dueDateC.set(Calendar.SECOND, 0);
+        dueDateC.set(Calendar.MILLISECOND, 0);
+        long dueDate = dueDateC.getTimeInMillis();
 
         String datemessage;
 
         if (dueDate >= todayDate) {
-            long differenceMillisecond = dueDate - todayDate + 1;
-            long differenceDays = TimeUnit.MILLISECONDS.toDays(differenceMillisecond) + 1;
+            long differenceMillisecond = dueDate - todayDate +1;
+            long differenceDays = TimeUnit.MILLISECONDS.toDays(differenceMillisecond);
             datemessage = "Due in " + String.valueOf(differenceDays);
 
             if (differenceDays == 0) {
@@ -253,7 +266,7 @@ public class TaskCursorAdaptor extends CursorAdapter {
             }
         } else {
 
-            long differenceMillisecond = todayDate - dueDate;
+            long differenceMillisecond = todayDate - dueDate+1;
             long differenceDays = TimeUnit.MILLISECONDS.toDays(differenceMillisecond)+1;
             datemessage = "Overdue by " + String.valueOf(differenceDays);
             if (differenceDays == 0) {
